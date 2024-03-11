@@ -1,0 +1,24 @@
+/* Estilo para la cuadrícula de cards */
+.card-container {
+    display: grid;
+    grid-template-columns: 1fr; /* Por defecto, una columna */
+    gap: 20px; /* Espacio entre las cards */
+  }
+
+.card-border {
+    border: 1px solid #ccc; /* Define el estilo del borde */
+    border-radius: 5px; /* Opcional: agrega esquinas redondeadas */
+    padding: 10px; /* Opcional: agrega relleno para separar el contenido del borde */
+  }
+  
+  /* Media query para pantallas más anchas */
+  @media (min-width: 1000px) {
+    .card-container {
+      grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+    }
+  }  
+  @media (min-width: 1300px) {
+      .card-container {
+        grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+      }
+  }
