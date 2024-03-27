@@ -19,7 +19,7 @@ class EntrenadorController extends Controller
      */
     public function index()
     {
-        return new EntrenadorCollection(Entrenador::paginate(10));
+        return new EntrenadorCollection(Entrenador::paginate(12));
     }
 
     /**

@@ -4,8 +4,9 @@ import axios from "axios";
 export default function Login() {
     const [error, setError] = useState([]); // This is the state for the error messages
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userRol, setUserRol] = useState(null); // This is the state for the login status
-
+    const [user, setUser] = useState(null);
+     
+    // This is the state for the login status
     /**
      * Handle the login form submission
      *
@@ -24,13 +25,12 @@ export default function Login() {
             .then((res) => {
                 setError([]);
 
-                const userRol = res.data.user.rol;
+                const user = res.data.user;
 
-                // Save the token and rol in the local storage
                 localStorage.setItem("access_token", res.data.access_token);
-                localStorage.setItem("rol", userRol);
-                setUserRol(userRol);
+                localStorage.setItem("user",JSON.stringify(user));
                 setIsLoggedIn(true);
+                setUser(user);
             })
             .catch((err) => {
                 setError(err?.response?.data?.errors);
@@ -42,9 +42,9 @@ export default function Login() {
      */
     useEffect(() => {
         //console.log("isLoggedIn changed: ", isLoggedIn);
-        if (isLoggedIn) {      
+        if (isLoggedIn && user) {      
 
-            switch (userRol) {
+            switch (user.rol) {
 
                 case "admin":
                     window.location.href = "/admin-dashboard";
@@ -60,7 +60,7 @@ export default function Login() {
                     break;
             }
         }
-    }, [isLoggedIn, userRol]);
+    }, [isLoggedIn, user]);
 
     return (    
         

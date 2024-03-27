@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'first_name'=>'Admin',
+            'first_name'=>'Eduardo',
             'last_name'=>'Jimeno Pablo',
             'email'=>'info@hangar-gym.com',
             'password'=> Hash::make('betagwe44'),
@@ -43,18 +43,28 @@ class DatabaseSeeder extends Seeder
         DB::table('entrenadores')->insert([
             'user_id'=>2,
             'iban'=>'ES2212345678912345678901',
-            'informacion'=>'La élite',
+            'informacion'=>'Head Coach',
         ]);
 
-        // Crear atleta
+        // Crear atletas
         DB::table('atletas')->insert([
             'user_id'=>3,
-            'apodo'=>'Rilu',
+            'apodo'=>'Sandra',
             'avatar'=>'prueba',
-            'informacion'=>'La élite',
+            'informacion'=>'Intermedio',
             'movil'=>'676685508',
             'entrenador_id'=>1
         ]);
+
+        DB::table('atletas')->insert([
+            'user_id'=>2,
+            'apodo'=>'Wtrioja',
+            'avatar'=>'Prueba',
+            'informacion'=>'Avanzado',
+            'movil'=>'676685508',
+            'entrenador_id'=>1
+        ]);
+
 
         // Crear ejercicios
         DB::table('ejercicios')->insert([

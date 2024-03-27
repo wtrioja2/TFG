@@ -8,6 +8,7 @@ import LineasSesion from "../page/lineasSesion";
 import Rm from "../page/rm";
 import Dashboard  from "../page/dashboard";
 import AdminDashboard  from "../page/adminDashboard";
+import ActualizarEjercicio from "../page/actualizarEjercicio"; //
 
 
 
@@ -26,42 +27,57 @@ export default createBrowserRouter([
     }, */
     {
         path: '/',
-        element: <Dashboard />
+        element:  <Dashboard />,
     },
     {
         path: "/dashboard",
-        element: <Dashboard />,
+        element:  <Dashboard />,
     },
     {
         path: "/admin-dashboard",
-        element: <AdminDashboard />,
+        element: 
+                <AdminDashboard />
     },
     {
         path: "/settings",
-        element: <Settings />,
+        element: 
+                <Settings />
     },
     {
         path: "/users",
-        element: <Users />,
+        element: 
+                <Users />
+        
     },
     {
         path: "/ejercicios",
-        element: <Ejercicios />,
+        element: 
+                <Ejercicios />
     },
     {
         path: "/crearEjercicio",
-        element: <CrearEjercicio />,
+        element: 
+                <CrearEjercicio />
+    },
+    {
+        path: "/actualizarEjercicio/:id",
+        element: 
+                <ActualizarEjercicio />
     },
     {
         path: "/sesiones",
-        element: <Sesiones />,
+        element: 
+                <Sesiones />
     },
     {
         path: "/lineasSesion",
-        element: <LineasSesion />,
+        element:
+                <LineasSesion />
+
     },
     {
         path: "/rm",
-        element: <Rm />,
+        element: 
+                <Rm />
     },
 ]);

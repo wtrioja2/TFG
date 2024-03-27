@@ -14,9 +14,10 @@ export default function TopNavigation() {
                 {},
                 axiosConfig
             )
-            .then((res) => {
+            .then(() => {
                 // Remove the token from the local storage
                 localStorage.removeItem("access_token");
+                localStorage.removeItem("user");
 
                 // Redirect to the login page
                 window.location.href = "/login";

@@ -78,10 +78,10 @@ ul, li {
 
 
 /*---------------------------------------------*/
-input {
+/* input {
     outline: none;
     border: none;
-}
+} */
 
 textarea {
   outline: none;
@@ -157,7 +157,10 @@ button:hover {
   overflow: hidden;
 }
 
-
+.create-ejercicio-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
 /*------------------------------------------------------------------
 [ Form ]*/
 

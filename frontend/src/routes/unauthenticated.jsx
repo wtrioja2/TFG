@@ -5,11 +5,15 @@ import Register from "../page/register"
 export default createBrowserRouter([
     {
         path: "/",
-        element: <Login />,
+        element: 
+                <Login />
+
     },
     {
         path: "/login",
-        element: <Login />,
+        element: 
+                <Login />
+
     },
     {
         path: "/register",

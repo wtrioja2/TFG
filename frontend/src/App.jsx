@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import Login from "./page/login";
+import React from 'react';
+import Login from './components/Login'
 
 function App() {
-  return (
-    <div>
-      <Login />
-    </div>
 
+  const [user, setUser] = useState(null);
+
+  return (
+
+      <div>
+        <Login setUser={setUser}/>
+      </div>
   );
 } 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from "axios";
-import axiosConfig from "../../config/axios-config";
+import axiosConfig from "../../../config/axios-config";
 
 export default function DeleteModal({setShowDeleteModal, lineaId}) {
  

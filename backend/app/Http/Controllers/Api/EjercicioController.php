@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EjercicioCollection;
+use App\Http\Resources\EjercicioNombreCollection;
 use App\Models\Ejercicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +20,11 @@ class EjercicioController extends Controller
     public function index()
     {
         return new EjercicioCollection(Ejercicio::paginate(12));
+    }
+
+    public function indexForSelect()
+    {
+        return new EjercicioNombreCollection(Ejercicio::paginate(25));
     }
 
     /**

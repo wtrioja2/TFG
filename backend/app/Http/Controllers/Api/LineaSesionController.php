@@ -37,11 +37,13 @@ class LineaSesionController extends Controller
             'fecha' => ['required'],
             'atleta_id' => ['required'],
             'ejercicio_id' => ['required'],
-            'tipo_actividad_id' => ['required'],
             'sesion_id' => ['required'],
             'series' => ['required'],
             'repeticiones' => ['required'],
-            'kilos' => ['required'],
+            'kilos' => [],
+            'tiempo_esfuerzo' => [],
+            'tiempo_descanso' => [],
+            'velocidad' => [],
             'comentario' => [],
         ]);
 
@@ -129,7 +131,7 @@ class LineaSesionController extends Controller
     return response()->json([
         'data' => $data,
     ], 200);
-    
+
     }
 
     /**
