@@ -23,7 +23,7 @@ export default function Pagination({
     
         if (meta && meta.current_page && meta.current_page > 2) {
             head = meta.current_page - 1;
-            tail = meta.current_page = 1;
+            tail = meta.current_page + 1;
         }
     
         if (meta && meta.last_page && tail > meta.last_page) {
@@ -49,14 +49,14 @@ export default function Pagination({
     return (
         <div className="flex justify-between items-center mt-4">
             <div>
-                <span className="text-gray-700">
-                    {meta && meta.from && meta.to && meta.total && meta.current_page && meta.last_page && (
-                    <>
-                        {meta.from} - {meta.to} of {meta.total} items (page{" "}
-                        {meta.current_page} of {meta.last_page})
-                    </>
-                    )}
-                </span>
+            <span className="text-gray-700">
+    {meta && meta.from && meta.to && meta.total && meta.current_page && meta.last_page && (
+        <>
+            {meta.from} - {meta.to} of {meta.total} items (page{" "}
+            {meta.current_page} of {meta.last_page})
+        </>
+    )}
+</span>
             </div>
             <div>
                 <button

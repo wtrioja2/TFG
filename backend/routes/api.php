@@ -46,8 +46,8 @@ Route::get('v1/sesiones/sesiones-con-lineas', [SesionController::class, 'getSesi
 Route::get('v1/atletas/{atletaId}/sesiones', [SesionController::class, 'getSesionesPorAtletaId']);
 Route::post('v1/sesiones/copiar-lineas', [SesionController::class, 'copiarLineasANuevaSesion']);
 Route::get('v1/ejercicios/select', [EjercicioController::class, 'indexForSelect']);
-Route::post('v1/ejercicios/filtrar', [EjercicioController::class, 'filtrar']);
-Route::post('v1/ejercicios/nombre', [EjercicioController::class, 'filtrarPorNombre']);
+Route::get('v1/ejercicios/filtrar', [EjercicioController::class, 'filtrar']);
+Route::get('v1/ejercicios/nombre', [EjercicioController::class, 'filtrarPorNombre']);
 
 
 

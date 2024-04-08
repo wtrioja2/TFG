@@ -1,7 +1,7 @@
 import React from "react";
 import TopNavigation from "../components/TopNavigation";
 import SidebarNavigation from "../components/SidebarNavigation";
-import EjerciciosDatatable from "../components/Ejercicios/EjerciciosDatatable";
+import EjerciciosDatatable from "../components/EjerciciosDatatable";
 
 export default function users() {
     

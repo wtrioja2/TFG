@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RMCollection;
 use App\Models\RM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class RMController extends Controller
 {
@@ -27,8 +29,40 @@ class RMController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       // Validar los datos de entrada
+       $validator = Validator::make($request->all(), [
+        'fecha' => 'required|date_format:d-m-Y', // Asegura que la fecha esté en el formato correcto
+        'rm' => 'required|numeric',
+        'ejercicio_id' => 'required|exists:ejercicios,id',
+        'atleta_id' => 'required|exists:atletas,id',
+        ]);
+
+        // Comprobar si hay errores de validación
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Formatear la fecha en el formato deseado ("día-mes-año")
+        $fecha = Carbon::createFromFormat('d-m-Y', $request->fecha)->format('Y-m-d');
+
+        // Crear el registro de RM
+        $rm = RM::create([
+            'fecha' => $fecha,
+            'rm' => $request->rm,
+            'ejercicio_id' => $request->ejercicio_id,
+            'atleta_id' => $request->atleta_id,
+        ]);
+
+        // Devolver la respuesta con el nuevo registro creado
+        return response()->json([
+            'data' => $rm,
+            'message' => 'RM created successfully'
+        ], 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -48,10 +82,42 @@ class RMController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, RM $rm)
     {
-        //
+       // Validar los datos de entrada
+       $validator = Validator::make($request->all(), [
+        'fecha' => 'required|date_format:d-m-Y',
+        'rm' => 'numeric',
+        'ejercicio_id' => 'exists:ejercicios,id',
+        'atleta_id' => 'exists:atletas,id',
+        ]);
+
+        // Comprobar si hay errores de validación
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Formatear la fecha en el formato deseado ("día-mes-año")
+        $fecha = Carbon::createFromFormat('d-m-Y', $request->fecha)->format('Y-m-d');
+
+        // Actualizar los campos proporcionados en la solicitud
+        $rm->update([
+            'fecha' => $fecha,
+            'rm' => $request->rm,
+            'ejercicio_id' => $request->ejercicio_id,
+            'atleta_id' => $request->atleta_id,
+        ]);
+
+        // Devolver la respuesta con el registro actualizado
+        return response()->json([
+            'data' => $rm,
+            'message' => 'RM updated successfully'
+        ], 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -59,8 +125,11 @@ class RMController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(RM $rm)
     {
-        //
+
+        RM::where('id', $rm->id)->delete();
+
+        return $this->displayMessage('The RM was successfully deleted!', 200, 'Status');
     }
 }

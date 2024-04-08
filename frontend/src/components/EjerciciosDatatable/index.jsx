@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import Pagination from "./Pagination";
-import axiosConfig from "../../../config/axios-config";
+import axios from "axios";import Pagination from "./Pagination";
+import axiosConfig from "../../config/axios-config";
+import SearchBox from "../SearchBox";
 import DeleteModal from "./DeleteModal";
-import SearchBox from "../../SearchBox";
-import EjercicioCreate from "../EjercicioCreate/index";
+import FormModal from "./FormModal";
 import {
   TextField,
   Select,
@@ -15,15 +13,18 @@ import {
 } from "@mui/material";
 
 export default function Index({ user }) {
-
-  const { id } = useParams();
   const [originalEjercicios, setOriginalEjercicios] = useState([]);
   const [ejercicios, setEjercicios] = useState([]);
   const [filterType, setFilterType] = useState("-1");
   const [filterMuscle, setFilterMuscle] = useState("-1");
   const [links, setLinks] = useState({});
   const [meta, setMeta] = useState({});
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [formMode, setFormMode] = useState("create");
+  const [defaultEjercicioData, setDefaultEjercicioData] = useState([]);
+  const [ejercicioId, setEjercicioId] = useState(null);
+  
   useEffect(() => {
     fetchEjercicios();
   }, []);
@@ -41,6 +42,25 @@ export default function Index({ user }) {
     } catch (error) {
       console.error("Error fetching ejercicios:", error);
     }
+  };
+
+  const createEjercicio = () => {
+    setShowFormModal(true);
+    setFormMode("create");
+    setEjercicioId(null);
+    setDefaultEjercicioData({});
+  };
+
+  const updateEjercicio = (ejercicioData) => {
+    setShowFormModal(true);
+    setFormMode("update");
+    setEjercicioId(ejercicioData.id);
+    setDefaultEjercicioData(ejercicioData);
+  };
+
+  const deleteEjercicio = (ejercicioId) => {
+    setShowDeleteModal(true);
+    setEjercicioId(ejercicioId);
   };
 
   const tiposActividad = ["fuerza", "cardio", "movilidad", "otro"];
@@ -103,15 +123,13 @@ export default function Index({ user }) {
             (filterMuscle === "-1" || ejercicio.grupo_muscular === filterMuscle)
         );
 
-  const handleUpdateExercise = (exerciseId) => {
-    window.location.href = `/actualizarEjercicio/${exerciseId}`;
-  };
+        
 
   return (
     <div className="mt-10">
       {user.rol === "admin" || user.rol === "entrenador" ? (
         <button
-          onClick={() => (window.location.href = "/crearEjercicio")}
+          onClick={ createEjercicio } 
           className="bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-full mb-5 float:right"
         >
           Añadir Ejercicio
@@ -193,11 +211,18 @@ export default function Index({ user }) {
                 </span>
               </div>
               {user.rol === "admin" || user.rol === "entrenador" ? (
+                <button 
+                  onClick={ () => updateEjercicio(ejercicio) } 
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full mt-2">
+                  Actualizar
+                </button>
+              ) : null}
+              {user.rol === "admin"  ? (
                 <button
-                  onClick={() => handleUpdateExercise(ejercicio.id)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full mt-2"
+                  onClick={ () => deleteEjercicio(ejercicio.id) }
+                  className="bg-red-500 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full mr-2"
                 >
-                  Actualizar Ejercicio
+                  Borrar
                 </button>
               ) : null}
             </div>
@@ -212,6 +237,26 @@ export default function Index({ user }) {
         nextPage={fetchEjercicios.bind(null, links.next)}
         lastPage={fetchEjercicios.bind(null, links.last)}
       />
+
+    {showDeleteModal && (
+        <DeleteModal
+          setShowDeleteModal={setShowDeleteModal}
+          ejercicioId={ejercicioId}
+          fetchEjercicios={fetchEjercicios}
+          meta={meta}
+        />
+      )}
+
+      {showFormModal && (
+        <FormModal
+          setShowFormModal={setShowFormModal}
+          formMode={formMode}
+          ejercicioId={ejercicioId}
+          defaultEjercicioData={defaultEjercicioData}
+          fetchEjercicios={fetchEjercicios}
+          meta={meta}
+        />
+      )}
     </div>
   );
 }

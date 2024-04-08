@@ -8,6 +8,8 @@ export default function Pagination({
     nextPage,
     lastPage,
 }) {
+    console.log("Meta:", meta);
+    console.log("FetchUsers:", fetchUsers);
 
     /**
      * Render the pagination number

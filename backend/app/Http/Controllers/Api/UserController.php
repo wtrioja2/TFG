@@ -37,7 +37,7 @@ class UserController extends Controller
             'last_name' => ['required'],
             'email' => ['required','email', Rule::unique('users', 'email')],
             'password' => ['required'],
-            'rol' => 'required|in:atleta,entrenador'
+            'rol' => 'required|in:atleta,entrenador,admin'
         ]);
 
         // Block or catch any validation failure if there are any
@@ -124,7 +124,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-                // Delete the record
+        // Delete the user
         User::where('id', $user->id)->delete();
 
         return $this->displayMessage('The user was successfully deleted!', 200, 'Status');

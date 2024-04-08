@@ -96,13 +96,15 @@ export default function index() {
     setShowDeleteModal(true);
     setUserId(userId);
   };
+  
   useEffect(() => {
     fetchUsers(`${import.meta.env.VITE_API_URL}/api/v1/users`);
   }, []);
 
   return (
     <div className="mt-10">
-      <button onClick={ createUser} 
+      <button 
+        onClick={ createUser} 
         className="bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-full mb-5">
         Añadir Usuario
       </button>

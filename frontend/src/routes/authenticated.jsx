@@ -2,13 +2,12 @@ import { createBrowserRouter } from "react-router-dom";
 import Settings from "../page/settings";
 import Users from "../page/users";
 import Ejercicios from "../page/ejercicios";
-import CrearEjercicio from "../page/crearEjercicio";
 import Sesiones from "../page/sesiones";
 import LineasSesion from "../page/lineasSesion";
 import Rm from "../page/rm";
 import Dashboard  from "../page/dashboard";
 import AdminDashboard  from "../page/adminDashboard";
-import ActualizarEjercicio from "../page/actualizarEjercicio"; //
+
 
 
 
@@ -53,16 +52,6 @@ export default createBrowserRouter([
         path: "/ejercicios",
         element: 
                 <Ejercicios />
-    },
-    {
-        path: "/crearEjercicio",
-        element: 
-                <CrearEjercicio />
-    },
-    {
-        path: "/actualizarEjercicio/:id",
-        element: 
-                <ActualizarEjercicio />
     },
     {
         path: "/sesiones",

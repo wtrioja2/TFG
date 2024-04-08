@@ -1,17 +1,17 @@
 import React from 'react';
 import axios from "axios";
-import axiosConfig from "../../../config/axios-config";
+import axiosConfig from "../../config/axios-config";
 
-export default function DeleteModal({setShowDeleteModal, lineaId}) {
+export default function DeleteModal({setShowDeleteModal, ejercicioId}) {
  
     const handleDelete = () => {
         axios
             .delete(
-                `${import.meta.env.VITE_API_URL}/api/v1/lineassesion/${lineaId}`,
+                `${import.meta.env.VITE_API_URL}/api/v1/ejercicios/${ejercicioId}`,
                 axiosConfig
             )
             .then((response) =>{
-                window.location.replace("/sesiones");
+                window.location.replace("/ejercicios");
             });
             setShowDeleteModal(false);
         }
@@ -21,7 +21,7 @@ export default function DeleteModal({setShowDeleteModal, lineaId}) {
                 <div className="flex justify-center items-center h-full">
                     <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
                         <p className="text-xl mb-2">
-                            Are you sure you want to delete this item {lineaId}?
+                            ¿Estás seguro de querer borrar el ejercicio {ejercicioId}?
                         </p>
                         <div className="flex justify-between mt-5">
                            

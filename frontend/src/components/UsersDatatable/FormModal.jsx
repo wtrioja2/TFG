@@ -14,14 +14,14 @@ export default function FormModal({
   const [password, setPassword] = useState(defaultUserData?.password);
   const [first_name, setFirstname] = useState(defaultUserData?.first_name);
   const [last_name, setLastName] = useState(defaultUserData?.last_name);
-  const [rol, setRol] = useState(defaultUserData?.rol);
+  const [rol, setRol] = useState(defaultUserData?.rol || 'atleta');
 
   const refreshValues = () => {
-    setEmail(null);
-    setPassword(null);
-    setFirstname(null);
-    setLastName(null);
-    setRol("atleta");
+    setFirstname('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setRol('atleta');
   };
 
   /**
@@ -29,7 +29,15 @@ export default function FormModal({
    *
    * @param object userData
    */
-  const handleCreateUser = (userData) => {
+  const handleCreateUser = () => {
+    const userData = {
+      first_name,
+      last_name,
+      email,
+      password,
+      rol,
+    };
+
     axios
       .post(
         `${import.meta.env.VITE_API_URL}/api/v1/users/`,
@@ -39,13 +47,13 @@ export default function FormModal({
       .then((response) => {
         setShowFormModal(false);
         refreshValues();
-      })
-      .finally(() => {
         fetchUsers(
-          `${import.meta.env.VITE_API_URL}/api/v1/users?page=${
-            meta.current_page
-          }`
+          `${import.meta.env.VITE_API_URL}/api/v1/users?page=${meta.current_page}`
         );
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error creating user:', error);
       });
   };
 
@@ -86,19 +94,19 @@ export default function FormModal({
     if (formMode === "create") {
       // Create the user
       handleCreateUser({
-        email,
-        password,
         first_name,
         last_name,
+        email,
+        password,
         rol,
       });
       // Update the user
     } else {
       handleUpdateUser({
-        email,
-        password,
         first_name,
         last_name,
+        email,
+        password,
         rol,
       });
     }
@@ -107,17 +115,17 @@ export default function FormModal({
   const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
-      case "email":
-        setEmail(value);
-        break;
-      case "password":
-        setPassword(value);
-        break;
       case "first_name":
         setFirstname(value);
         break;
       case "last_name":
         setLastName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
         break;
       case "rol":
         setRol(value);
