@@ -15,8 +15,12 @@ class Entrenador extends Model
         'user_id',
         'iban',
         'informacion',
+        'atletas_ids',
     ];
 
+    protected $casts = [
+        'atletas_ids' => 'array', // Convertimos el campo atletas_ids a un array
+    ];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -24,6 +28,6 @@ class Entrenador extends Model
 
     public function atletas()
     {
-        return $this->hasMany(Atleta::class);
+        return $this->hasMany(Atleta::class, 'entrenador_id');
     }
 }

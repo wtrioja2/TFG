@@ -14,12 +14,20 @@ class SesionController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return SesionCollection
      */
     public function index()
     {
         return new SesionCollection(Sesion::paginate(15));
     }
+
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $sesiones = Sesion::where('atleta_id', $atletaId)->get();
+        return new SesionCollection($sesiones);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -29,7 +37,29 @@ class SesionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validar los datos de entrada
+        $validator = Validator::make($request->all(), [
+            'fecha' => ['required'],
+            'nombre' => ['required'],
+            'atleta_id' => ['required'],
+            'microciclo_id' => ['required'],
+        ]);
+
+        // Manejar errores de validación
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Algunos campos son obligatorios.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        // Crear una nueva sesión
+        $sesion = Sesion::create($request->all());
+
+        return response()->json([
+            'data' => $sesion,
+            'message' => 'Sesión creada exitosamente.',
+        ], 201);
     }
 
     /**
@@ -54,25 +84,25 @@ class SesionController extends Controller
 
 
     public function getSesionesPorAtletaId($atletaId)
-{
-    try {
-        // Busca las sesiones del atleta por su ID
-        $sesiones = Sesion::where('atleta_id', $atletaId)->get();
+    {
+        try {
+            // Busca las sesiones del atleta por su ID
+            $sesiones = Sesion::where('atleta_id', $atletaId)->get();
 
-        // Verifica si se encontraron sesiones para el atleta
-        if ($sesiones->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron sesiones para el atleta'], 404);
+            // Verifica si se encontraron sesiones para el atleta
+            if ($sesiones->isEmpty()) {
+                return response()->json(['message' => 'No se encontraron sesiones para el atleta'], 404);
+            }
+
+            // Retorna las sesiones encontradas en formato JSON
+            return response()->json([
+                'sesiones' => $sesiones,
+            ]);
+        } catch (\Exception $e) {
+            // Manejo de errores
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        // Retorna las sesiones encontradas en formato JSON
-        return response()->json([
-            'sesiones' => $sesiones,
-        ]);
-    } catch (\Exception $e) {
-        // Manejo de errores
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
 
     /**
      * Update the specified resource in storage.
@@ -81,9 +111,31 @@ class SesionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Sesion $sesion)
     {
-        //
+        // Validar los datos de entrada
+    $validator = Validator::make($request->all(), [
+        'fecha' => [],
+        'nombre' => [],
+        'atleta_id' => [],
+        'microciclo_id' => [],
+    ]);
+
+    // Manejar errores de validación
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Error de validación.',
+            'errors' => $validator->errors(),
+        ], 400);
+    }
+
+    // Actualizar los campos necesarios de la sesión
+    $sesion->update($request->all());
+
+    return response()->json([
+        'data' => $sesion,
+        'message' => 'Sesión actualizada exitosamente.',
+    ], 200);
     }
 
     /**
@@ -100,20 +152,22 @@ class SesionController extends Controller
     }
 
     public function getSesionesConLineas()
-{
-    $sesionesConLineas = Sesion::with('lineasSesion')->get();
+    {
+        $sesionesConLineas = Sesion::with('lineasSesion')->get();
 
-    return response()->json([
-        'data' => $sesionesConLineas,
-    ]);
-}
+        return response()->json([
+            'data' => $sesionesConLineas,
+        ]);
+    }
     public function getTotalsByFecha(Request $request)
     {
         try {
             $fecha = $request->input('fecha');
-            $sesiones = Sesion::where('fecha', $fecha)->with(['lineasSesion' => function ($query) use ($fecha) {
-                $query->where('fecha', $fecha);
-            }])->get();
+            $sesiones = Sesion::where('fecha', $fecha)->with([
+                'lineasSesion' => function ($query) use ($fecha) {
+                    $query->where('fecha', $fecha);
+                }
+            ])->get();
 
             //Iniciamos totales
             $totalEjercicios = 0;
@@ -123,12 +177,12 @@ class SesionController extends Controller
 
             foreach ($sesiones as $sesion) {
 
-                 //Calculamos el total de ejercicios distintos
+                //Calculamos el total de ejercicios distintos
                 $ejerciciosIds = $sesion->lineasSesion->pluck('ejercicio_id')->unique()->toArray();
                 $totalEjercicios += count($ejerciciosIds);
 
                 //Calculamos el total de repeticiones (series * repeticiones)
-                $totalRepeticiones += $sesion->lineasSesion->sum(function ($lineaSesion){
+                $totalRepeticiones += $sesion->lineasSesion->sum(function ($lineaSesion) {
                     return $lineaSesion->series * $lineaSesion->repeticiones;
                 });
 
@@ -139,13 +193,13 @@ class SesionController extends Controller
                 $volumenAbsolutoTotal += $volumenAbsolutoSesion;
 
                 //Calculamos el volumen relativo (%1RM * repeticiones) - (%1RM = kilos / 1RM)
-                $volumenRelativoSesion = $sesion->lineasSesion->sum(function ($lineaSesion) use ($sesion){
+                $volumenRelativoSesion = $sesion->lineasSesion->sum(function ($lineaSesion) use ($sesion) {
                     $ejercicio = Ejercicio::find($lineaSesion->ejercicio_id);
 
                     $ultimaFechaRM = $ejercicio->rms->where('fecha', '<=', $sesion->fecha)->max('fecha');
                     $ultimaRM = $ejercicio->rms->where('fecha', $ultimaFechaRM)->first();
 
-                    if ($ultimaRM){
+                    if ($ultimaRM) {
                         $rm = $ultimaRM->rm;
                         $volumen = ($lineaSesion->kilos / $rm) * ($lineaSesion->series * $lineaSesion->repeticiones);
                         $volumenRedondeado = number_format($volumen, 2);
@@ -158,7 +212,7 @@ class SesionController extends Controller
             }
 
             return response()->json([
-                'total_ejercicios'  => $totalEjercicios,
+                'total_ejercicios' => $totalEjercicios,
                 'total_repeticiones' => $totalRepeticiones,
                 'volumen_absoluto' => $volumenAbsolutoTotal,
                 'volumen_relativo' => $volumenRelativoTotal,
@@ -169,7 +223,7 @@ class SesionController extends Controller
         }
     }
 
-    public function copiarLineasANuevaSesion (Request $request)
+    public function copiarLineasANuevaSesion(Request $request)
     {
         try {
             $sesionOriginalId = $request->input('sesion_original_id');
@@ -177,7 +231,7 @@ class SesionController extends Controller
 
             $sesionOriginal = Sesion::find($sesionOriginalId);
 
-            if(!$sesionOriginal){
+            if (!$sesionOriginal) {
                 return response()->json(['message' => 'Sesión original no encontrada'], 404);
             }
             $nuevaSesion = new Sesion();
@@ -190,7 +244,7 @@ class SesionController extends Controller
 
             $nuevaSesion->save();
 
-            foreach($sesionOriginal->lineasSesion as $lineaSesion){
+            foreach ($sesionOriginal->lineasSesion as $lineaSesion) {
 
                 $nuevaLineaSesion = new LineaSesion();
                 $nuevaLineaSesion->sesion_id = $nuevaSesion->id;

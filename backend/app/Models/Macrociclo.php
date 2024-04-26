@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Macrociclo extends Model
 {
@@ -17,6 +18,13 @@ class Macrociclo extends Model
         'descripcion',
         'atleta_id',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($macrociclo) {
+            $macrociclo->año = Carbon::now()->year;
+        });
+    }
 
     public function atleta()
     {

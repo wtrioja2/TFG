@@ -2,11 +2,13 @@ import { createBrowserRouter } from "react-router-dom";
 import Settings from "../page/settings";
 import Users from "../page/users";
 import Ejercicios from "../page/ejercicios";
+import Planificacion from "../page/planificacion";
 import Sesiones from "../page/sesiones";
 import LineasSesion from "../page/lineasSesion";
 import Rm from "../page/rm";
 import Dashboard  from "../page/dashboard";
 import AdminDashboard  from "../page/adminDashboard";
+import EntrenadorDashboard  from "../page/entrenadorDashboard";
 
 
 
@@ -38,6 +40,11 @@ export default createBrowserRouter([
                 <AdminDashboard />
     },
     {
+        path: "/entrenador-dashboard",
+        element: 
+                <EntrenadorDashboard />
+    },
+    {
         path: "/settings",
         element: 
                 <Settings />
@@ -52,6 +59,11 @@ export default createBrowserRouter([
         path: "/ejercicios",
         element: 
                 <Ejercicios />
+    },
+    {
+        path: "/planificacion",
+        element: 
+                <Planificacion />
     },
     {
         path: "/sesiones",

@@ -15,7 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Crear 3 usuarios: admin, entrenador y deportista
+        // Crear 4 usuarios: 1 rol admin, 1 rol entrenador y 2 rol deportistas
+
+        DB::table('users')->insert([
+            'first_name'=>'Admin',
+            'last_name'=>'HangarApp',
+            'email'=>'info@hangar-gym.com',
+            'password'=> Hash::make('betagwe44'),
+            'rol'=>'admin'
+        ]);
         DB::table('users')->insert([
             'first_name'=>'Eduardo',
             'last_name'=>'Jimeno Pablo',
@@ -25,11 +33,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'first_name'=>'Eduardo',
-            'last_name'=>'Jimeno Pablo',
-            'email'=>'info@hangar-gym.com',
-            'password'=> Hash::make('betagwe44'),
-            'rol'=>'admin'
+            'first_name'=>'Mario',
+            'last_name'=>'Perez Pascual',
+            'email'=>'sinku2104@hotmail.com',
+            'password'=> Hash::make('123456'),
         ]);
 
         DB::table('users')->insert([
@@ -39,16 +46,26 @@ class DatabaseSeeder extends Seeder
             'password'=> Hash::make('123456'),
         ]);
 
-        // Creo entrenador
+        // Creo 1 entrenador
         DB::table('entrenadores')->insert([
             'user_id'=>2,
+            'apodo'=>'Eduardo Jimeno',
             'iban'=>'ES2212345678912345678901',
             'informacion'=>'Head Coach',
         ]);
 
-        // Crear atletas
+        // Crear 3 atletas
         DB::table('atletas')->insert([
             'user_id'=>3,
+            'apodo'=>'Sinku',
+            'avatar'=>'prueba',
+            'informacion'=>'Intermedio',
+            'movil'=>'676685508',
+            'entrenador_id'=>1
+        ]);
+
+        DB::table('atletas')->insert([
+            'user_id'=>4,
             'apodo'=>'Sandra',
             'avatar'=>'prueba',
             'informacion'=>'Intermedio',
@@ -65,6 +82,9 @@ class DatabaseSeeder extends Seeder
             'entrenador_id'=>1
         ]);
 
+        // Actualizar el campo atletas_ids del entrenador con id 1
+        $atletasIds = DB::table('atletas')->whereIn('user_id', [2,3,4])->pluck('id')->toArray();
+        DB::table('entrenadores')->where('id', 1)->update(['atletas_ids' => json_encode($atletasIds)]);
 
         // Crear ejercicios
         DB::table('ejercicios')->insert([
@@ -286,7 +306,7 @@ class DatabaseSeeder extends Seeder
             'tipo'=>'movilidad',
         ]);
         DB::table('ejercicios')->insert([
-            'nombre'=>'Mortal con tirabuzón',
+            'nombre'=>'Mortal',
             'url_foto' => '',
             'url_video'=>'',
             'tipo'=>'otro',
@@ -471,14 +491,14 @@ class DatabaseSeeder extends Seeder
 
         // Crear macrociclo
         DB::table('macrociclos')->insert([
-            'año'=>2023,
+            'año'=>2024,
             'nombre'=>'Primer macrociclo',
             'atleta_id'=>1,
         ]);
 
         // Crear mesociclo
         DB::table('mesociclos')->insert([
-            'mes'=> 10,
+            'mes'=> 04,
             'nombre'=>'Primer mesociclo ondulante',
             'atleta_id'=> 1,
             'macrociclo_id'=> 1,
@@ -486,25 +506,25 @@ class DatabaseSeeder extends Seeder
 
          // Crear Microciclos (semanas)
         DB::table('microciclos')->insert([
-            'semana'=> 40,
+            'semana'=> 16,
             'nombre'=>'1º Ondulante (1/4)',
             'atleta_id'=> 1,
             'mesociclo_id'=> 1,
         ]);
         DB::table('microciclos')->insert([
-            'semana'=> 41,
+            'semana'=> 17,
             'nombre'=>'1º Ondulante (2/4)',
             'atleta_id'=>1,
             'mesociclo_id'=>1,
         ]);
         DB::table('microciclos')->insert([
-            'semana'=> 42,
+            'semana'=> 18,
             'nombre'=>'1º Ondulante (3/4)',
             'atleta_id'=>1,
             'mesociclo_id'=>1,
         ]);
         DB::table('microciclos')->insert([
-            'semana'=> 43,
+            'semana'=> 19,
             'nombre'=>'1º Ondulante (4/4)',
             'atleta_id'=>1,
             'mesociclo_id'=>1,
@@ -512,19 +532,19 @@ class DatabaseSeeder extends Seeder
 
          // Crear Sesiones (días)
         DB::table('sesiones')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'nombre'=>'1º Ondulante (1/12)',
             'atleta_id'=>1,
             'microciclo_id'=>1,
         ]);
         DB::table('sesiones')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'nombre'=>'1º Ondulante (2/12)',
             'atleta_id'=>1,
             'microciclo_id'=>1,
         ]);
         DB::table('sesiones')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'nombre'=>'1º Ondulante (3/12)',
             'atleta_id'=>1,
             'microciclo_id'=>1,
@@ -588,7 +608,7 @@ class DatabaseSeeder extends Seeder
 
         // Crear Lineas de sesión
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>95,
@@ -597,7 +617,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>35,
@@ -606,7 +626,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>60,
@@ -615,7 +635,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>65,
@@ -624,7 +644,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>35,
@@ -633,7 +653,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>57.5,
@@ -642,7 +662,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>60,
@@ -651,7 +671,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2023-04-15',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>35,
@@ -660,7 +680,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-02',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>30,
@@ -670,7 +690,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>95,
@@ -679,7 +699,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>35,
@@ -688,7 +708,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>60,
@@ -697,7 +717,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>65,
@@ -706,7 +726,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>35,
@@ -715,7 +735,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>57.5,
@@ -724,7 +744,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>60,
@@ -733,7 +753,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>35,
@@ -742,7 +762,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>2,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-04',
+            'fecha'=>'2024-04-17',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>30,
@@ -752,7 +772,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>95,
@@ -761,7 +781,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>35,
@@ -770,7 +790,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>5,
             'kilos'=>60,
@@ -779,7 +799,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>65,
@@ -788,7 +808,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>35,
@@ -797,7 +817,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>10,
             'kilos'=>57.5,
@@ -806,7 +826,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>60,
@@ -815,7 +835,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>35,
@@ -824,7 +844,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>3,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-10-06',
+            'fecha'=>'2024-04-19',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>30,
@@ -835,7 +855,7 @@ class DatabaseSeeder extends Seeder
 
         // Crear Composicion corporal
         DB::table('composicion_corporal')->insert([
-            'fecha'=>'2023-08-09',
+            'fecha'=>'2024-04-09',
             'altura'=>163,
             'peso'=>74.20,
             'atleta_id'=>1,

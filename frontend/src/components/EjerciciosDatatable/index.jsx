@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";import Pagination from "./Pagination";
+import axios from "axios";
+import Pagination from "./Pagination";
 import axiosConfig from "../../config/axios-config";
 import SearchBox from "../SearchBox";
 import DeleteModal from "./DeleteModal";

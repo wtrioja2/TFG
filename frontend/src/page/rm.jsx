@@ -16,7 +16,7 @@ export default function users() {
                     <h1 className="w-full text-3xl text-gray-800 font-bold leading-tight">
                         RM
                     </h1>
-                    <RmDatatable />
+                    <RmDatatable  user={ user } />
                 </main>
             </div>
         </div>

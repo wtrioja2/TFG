@@ -16,7 +16,7 @@ export default function users() {
                     <h1 className="w-full text-3xl text-gray-800 font-bold leading-tight">
                         Sesión
                     </h1>
-                    <Sesiones />
+                    <Sesiones  user={ user }/>
                 </main>
             </div>
         </div>

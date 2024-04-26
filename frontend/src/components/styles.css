@@ -10,7 +10,7 @@
     border-radius: 5px; /* Opcional: agrega esquinas redondeadas */
     padding: 10px; /* Opcional: agrega relleno para separar el contenido del borde */
   }
-  
+
   /* Media query para pantallas más anchas */
   @media (min-width: 1000px) {
     .card-container {

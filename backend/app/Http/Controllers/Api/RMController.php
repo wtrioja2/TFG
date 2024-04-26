@@ -18,7 +18,22 @@ class RMController extends Controller
      */
     public function index()
     {
-        return new RMCollection(RM::paginate(10));
+        return new RMCollection(RM::paginate(12));
+    }
+
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $rms = RM::where('atleta_id', $atletaId)->get()->map(function ($rm) {
+            return [
+                'id' => $rm->id,
+                'ejercicio_id' => $rm->ejercicio_id,
+                'fecha' => $rm->fecha,
+                'rm' => $rm->rm,
+            ];
+        });
+
+        return $rms->toArray();
     }
 
     /**

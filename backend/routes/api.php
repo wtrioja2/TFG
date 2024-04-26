@@ -8,9 +8,11 @@ use App\Http\Controllers\Api\EjercicioController;
 use App\Http\Controllers\Api\LineaSesionController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
+use App\Http\Controllers\Api\MacrocicloController;
+use App\Http\Controllers\Api\MesocicloController;
+use App\Http\Controllers\Api\MicrocicloController;
 use App\Http\Controllers\Api\RMController;
 use App\Http\Controllers\Api\SesionController;
-use App\Http\Controllers\Api\TipoActividadController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Http\Request;
@@ -46,8 +48,15 @@ Route::get('v1/sesiones/sesiones-con-lineas', [SesionController::class, 'getSesi
 Route::get('v1/atletas/{atletaId}/sesiones', [SesionController::class, 'getSesionesPorAtletaId']);
 Route::post('v1/sesiones/copiar-lineas', [SesionController::class, 'copiarLineasANuevaSesion']);
 Route::get('v1/ejercicios/select', [EjercicioController::class, 'indexForSelect']);
+Route::get('v1/ejercicios/todos', [EjercicioController::class, 'indexTotalEjercicios']);
+Route::get('v1/entrenadores/todos', [EntrenadorController::class, 'indexTotalEntrenadores']);
 Route::get('v1/ejercicios/filtrar', [EjercicioController::class, 'filtrar']);
 Route::get('v1/ejercicios/nombre', [EjercicioController::class, 'filtrarPorNombre']);
+Route::get('v1/rm/indexById', [RMController::class, 'indexById']);
+Route::get('v1/sesiones/indexById', [SesionController::class, 'indexById']);
+Route::get('v1/lineassesion/indexById', [LineaSesionController::class, 'indexById']);
+Route::get('v1/atletas/indexByUserId', [AtletaController::class, 'indexByUserId']);
+Route::get('v1/entrenadores/{entrenador}/atletas', [EntrenadorController::class, 'getAtletas']);
 
 
 
@@ -59,3 +68,6 @@ Route::apiResource('v1/sesiones', SesionController::class);
 Route::apiResource('v1/lineassesion', LineaSesionController::class);
 Route::apiResource('v1/composicioncorporal', ComposicionCorporalController::class);
 Route::apiResource('v1/entrenadores', EntrenadorController::class);
+Route::apiResource('v1/microciclos', MicrocicloController::class);
+Route::apiResource('v1/mesociclos', MesocicloController::class);
+Route::apiResource('v1/macrociclos', MacrocicloController::class);

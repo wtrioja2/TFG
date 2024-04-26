@@ -27,6 +27,19 @@ class EjercicioController extends Controller
         return new EjercicioNombreCollection(Ejercicio::paginate(25));
     }
 
+    public function indexTotalEjercicios()
+    {
+        $ejercicios = Ejercicio::all()->map(function ($ejercicio) {
+            return [
+                'id' => $ejercicio->id,
+                'nombre' => $ejercicio->nombre,
+            ];
+        });
+
+        return $ejercicios->toArray();
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *

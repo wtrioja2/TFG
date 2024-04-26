@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Mesociclo extends Model
 {
@@ -18,6 +19,12 @@ class Mesociclo extends Model
         'macrociclo_id'
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($mesociclo) {
+            $mesociclo->mes = Carbon::now()->month;
+        });
+    }
     public function atleta()
     {
         return $this->belongsTo(Atleta::class, 'atleta_id');

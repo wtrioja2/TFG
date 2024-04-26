@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Microciclo extends Model
 {
@@ -18,6 +19,13 @@ class Microciclo extends Model
         'atleta_id',
         'mesociclo_id'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($microciclo) {
+            $microciclo->semana = Carbon::now()->weekOfYear;
+        });
+    }
 
     public function atleta()
     {

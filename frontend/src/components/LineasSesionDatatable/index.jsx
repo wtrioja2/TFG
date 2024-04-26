@@ -2,100 +2,185 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Pagination from "./Pagination";
 import axiosConfig from "../../config/axios-config";
-import DeleteModal from "./DeleteModal";
 import "react-datepicker/dist/react-datepicker.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
-import DatePicker from "react-datepicker";
+import DeleteModal from "./DeleteModal";
+import MyDatePicker from "../MyDatePicker";
 import { format } from "date-fns";
+import Counter from "../Counter";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
-export default function index() {
+export default function index({ user }) {
   const [lineas, setLineas] = useState([]);
   const [ejercicios, setEjercicios] = useState([]);
   const [rms, setRms] = useState([]);
   const [links, setLinks] = useState([]);
   const [meta, setMeta] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editarFila, setEditarFila] = useState(null);
-  const [editarCampo, setEditarCampo] = useState(null);
-  const [lineaId, setLineaId] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const datepickerRef = useRef(null);
+  const [selectedSesion, setSelectedSesion] = useState("");
+  const [entrenadores, setEntrenadores] = useState([]);
+  const [selectedEntrenador, setSelectedEntrenador] = useState("");
+  const [atletas, setAtletas] = useState([]);
+  const [selectedAtleta, setSelectedAtleta] = useState("");
+  const [allAtletas, setAllAtletas] = useState([]);
   const [totalEjercicios, setTotalEjercicios] = useState(null);
   const [totalRepeticiones, setTotalRepeticiones] = useState(null);
   const [volAbsoluto, setVolAbsoluto] = useState(null);
   const [volRelativo, setVolRelativo] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const datepickerRef = useRef(null);
-  const [selectedSesion, setSelectedSesion] = useState("");
+  const [editarFila, setEditarFila] = useState(null);
+  const [editarCampo, setEditarCampo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [lineaId, setLineaId] = useState(null);
+
+  useEffect(() => {
+    if (user.rol === "admin") {
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/api/v1/entrenadores/todos`)
+        .then((response) => {
+          const entrenadoresArray = Object.values(response.data);
+          setEntrenadores(entrenadoresArray);
+        })
+        .catch((error) => {
+          console.error("Error al cargar entrenadores:", error);
+        });
+    }
+
+    fetchEjercicios();
+  }, [user]);
+
+  const obtenerAtletas = async (entrenadorId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/v1/entrenadores/${entrenadorId}/atletas`
+      );
+      setAtletas(response.data.data);
+    } catch (error) {
+      console.error("Error al obtener los atletas del entrenador", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEntrenadorChange = (event) => {
+    const entrenadorId = event.target.value;
+    setSelectedEntrenador(entrenadorId);
+    obtenerAtletas(entrenadorId);
+  };
 
   const handleDateChange = async (date) => {
     setSelectedDate(date);
     const formattedDate = format(date, "yyyy-MM-dd");
-    console.log(formattedDate);
 
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/sesiones/${formattedDate}`
       );
 
-      if (response.data && response.data.nombre) {
-        const nombreSesion = response.data.nombre;
-        console.log(nombreSesion);
-        setSelectedSesion(nombreSesion);
+      if (response.data && response.data.id) {
+        const sesion = response.data;
+        setSelectedSesion(sesion);
 
-        const totalesResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/sesiones/total?fecha=${formattedDate}`);
-        console.log(totalesResponse);
-        const totalEjercicios = totalesResponse.data.total_ejercicios;
-        const totalRepeticiones = totalesResponse.data.total_repeticiones;
-        const volAbsoluto = totalesResponse.data.volumen_absoluto;
-        const volRelativo = totalesResponse.data.volumen_relativo;
-        
-        setTotalEjercicios(totalEjercicios);
-        setTotalRepeticiones(totalRepeticiones);
-        setVolAbsoluto(volAbsoluto);
-        setVolRelativo(volRelativo);
-
+        await calcularTotales(formattedDate);
       } else {
-
-        setTotalEjercicios(0);
-        setTotalRepeticiones(0);
-        setVolAbsoluto(0);
-        setVolRelativo(0);
-
+        resetTotals();
       }
     } catch (error) {
       console.error("No hay sesión en la fecha seleccionada: ", error);
       setSelectedSesion("");
-      setTotalEjercicios(0);
-      setTotalRepeticiones(0);
-      setVolAbsoluto(0);
-      setVolRelativo(0);
+      resetTotals();
     }
   };
 
-  /**
-   * Set the paginated data
-   *
-   * @param object response
-   */
+  const calcularTotales = async (fecha) => {
+    try {
+      const totalesResponse = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/sesiones/total?fecha=${fecha}`
+      );
+
+      const {
+        total_ejercicios,
+        total_repeticiones,
+        volumen_absoluto,
+        volumen_relativo,
+      } = totalesResponse.data;
+
+      setTotalEjercicios(total_ejercicios);
+      setTotalRepeticiones(total_repeticiones);
+      setVolAbsoluto(volumen_absoluto);
+      setVolRelativo(volumen_relativo);
+    } catch (error) {
+      console.error("Error al calcular los totales: ", error);
+    }
+  };
+
+  const resetTotals = () => {
+    setTotalEjercicios(0);
+    setTotalRepeticiones(0);
+    setVolAbsoluto(0);
+    setVolRelativo(0);
+  };
+
   const setPaginatedData = (response) => {
     setLineas(response.data.data);
     setLinks(response.data.links);
     setMeta(response.data.meta);
   };
 
-  /**
-   * Fetch all users
-   */
-  const fetchLineas = async (link) => {
+  const fetchLineas = async () => {
     const formattedDate = format(selectedDate, "yyyy-MM-dd");
-    const url = `${
+    let url = `${
       import.meta.env.VITE_API_URL
-    }/api/v1/lineassesion?fecha=${formattedDate}`;
+    }/api/v1/lineassesion/indexById?atleta_id=${selectedAtleta}&fecha=${formattedDate}`;
     try {
       const response = await axios.get(url, axiosConfig);
       setPaginatedData(response);
     } catch (error) {
       console.error("Error fetching lineas: ", error);
+    }
+  };
+
+  const fetchEjercicios = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/ejercicios/todos`
+      );
+      setEjercicios(response.data);
+    } catch (error) {
+      console.error("Error fetching ejercicios: ", error);
+    }
+  };
+
+  const fetchRms = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/rm/indexById?atleta_id=${selectedAtleta}`
+      );
+      const rmsData = response.data;
+
+      // Filtra y selecciona las RM más recientes por ejercicio_id
+      const ultimaRms = rmsData.reduce((acc, rm) => {
+        if (!acc[rm.ejercicio_id] || rm.fecha > acc[rm.ejercicio_id].fecha) {
+          acc[rm.ejercicio_id] = rm;
+        }
+        return acc;
+      }, {});
+      console.log(ultimaRms);
+      setRms(ultimaRms);
+    } catch (error) {
+      console.error("Error fetching RMs: ", error);
     }
   };
 
@@ -115,27 +200,9 @@ export default function index() {
     await fetchLineas(links.last);
   };
 
-  /**
-   * Delete de linea
-   *
-   * @param int lineaId
-   */
   const deleteLinea = (lineaId) => {
     setShowDeleteModal(true);
     setLineaId(lineaId);
-  };
-
-  const getMaxLineaId = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/lineassesion/maxid`
-      );
-      const maxId = response.data.maxId;
-      return maxId;
-    } catch (error) {
-      console.error("Error fetching max Id: ", error);
-      return null;
-    }
   };
 
   const insertaLineaEnBD = async (nuevaLinea) => {
@@ -154,127 +221,148 @@ export default function index() {
     }
   };
 
-  const insertaLinea = async () => {
-    const fechaActual = new Date().toISOString().split("T")[0];
-    try {
-      const maxId = await getMaxLineaId();
-      const nuevaLinea = {
-        id: maxId + 1,
-        fecha: fechaActual,
-        series: 3,
-        repeticiones: 10,
-        kilos: 50,
-        comentario: "...",
-        atleta_id: 1,
-        ejercicio_id: 1,
-        tipo_actividad_id: 1,
-        sesion_id: 1,
-      };
-
-      await insertaLineaEnBD(nuevaLinea);
-      const updatedLineas = [...lineas, nuevaLinea];
-      setLineas(updatedLineas);
-    } catch (error) {
-      console.error("Error al obtener el ID máximo: ", error);
-    }
-  };
-
-  useEffect(() => {
-    //fetchLineas(`${import.meta.env.VITE_API_URL}/api/v1/lineassesion?fecha=${format(selectedDate, 'yyyy-MM-dd')}`);
-    fetchLineas();
-
-    const fetchData = async () => {
-      try {
-        const [ejerciciosResponse, rmsResponse] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_API_URL}/api/v1/ejercicios`),
-          axios.get(`${import.meta.env.VITE_API_URL}/api/v1/rm`),
-        ]);
-
-        setEjercicios(ejerciciosResponse.data.data);
-
-        // Filta los RM más recientes por ejercicio_id
-        const ultimaRms = rmsResponse.data.data.reduce((acc, rm) => {
-          if (!acc[rm.ejercicio_id] || rm.fecha > acc[rm.ejercicio_id].fecha) {
-            acc[rm.ejercicio_id] = rm;
-          }
-          return acc;
-        }, {});
-        setRms(ultimaRms);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-
-    fetchData();
-
-  }, [selectedDate]); // Agregamos selectedDate como dependencia
-
-  const actualizaFila = async (filaIndex, campo) => {
+  const actualizaFila = async (filaIndex, campo, valor) => {
     try {
       const id = lineas[filaIndex].id;
-      const valor = lineas[filaIndex][campo];
-
-      console.log(`ID: ${id}, Campo: ${campo}, Valor: ${valor}`);
-
+  
       await axios.put(
         `${import.meta.env.VITE_API_URL}/api/v1/lineassesion/${id}`,
         { [campo]: valor }
       );
+  
       setEditarFila(null);
       setEditarCampo(null);
+  
+      await calcularTotales(format(selectedDate, "yyyy-MM-dd"));
     } catch (e) {
       console.error("Error al actualizar la fila: ", e);
     }
   };
 
+  useEffect(() => {
+    fetchLineas();
+  }, [selectedDate, selectedAtleta]);
+
+  useEffect(() => {
+    if (selectedAtleta) {
+      fetchRms();
+    }
+  }, [selectedAtleta]);
+
   return (
     <div className="mt-10">
-      <h1 className="w-full text-2xl text-gray-800 font-bold leading-tight text-center">
-        {selectedSesion}
-      </h1>
-      <div className="flex justify-between mb-3">
-        <div className="relative">
-          <FontAwesomeIcon
-            icon={faCalendar}
-            size="lg"
-            onClick={() => datepickerRef.current.setOpen(true)}
-            style={{ cursor: "pointer" }}
-          />
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            setSelectedDate={setSelectedDate}
-            className="form-control pl-10 pr-3"
-            ref={datepickerRef}
+      {user.rol === "admin" && (
+        <div className="flex justify-between mb-3">
+          {entrenadores ? (
+            <FormControl
+              variant="outlined"
+              className="form-control mb-3 tercio"
+            >
+              <InputLabel id="entrenador-label">
+                Seleccionar Entrenador
+              </InputLabel>
+              <Select
+                labelId="entrenador-label"
+                id="entrenador-select"
+                value={selectedEntrenador}
+                onChange={handleEntrenadorChange}
+                label="Seleccionar Entrenador"
+              >
+                <MenuItem value="">Seleccionar Entrenador</MenuItem>
+                {entrenadores.map((entrenador) => (
+                  <MenuItem key={entrenador.id} value={entrenador.id}>
+                    {entrenador.apodo}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ) : (
+            <p>Cargando entrenadores...</p>
+          )}
+          {selectedEntrenador && (
+            <FormControl
+              variant="outlined"
+              className="form-control mb-3 tercio"
+            >
+              <InputLabel id="atleta-label">Seleccionar Atleta</InputLabel>
+              <Select
+                labelId="atleta-label"
+                id="atleta-select"
+                value={selectedAtleta}
+                onChange={(e) => setSelectedAtleta(e.target.value)}
+                label="Seleccionar Atleta"
+              >
+                <MenuItem value="">Seleccionar Atleta</MenuItem>
+                {atletas.map((atleta) => (
+                  <MenuItem key={atleta.id} value={atleta.id}>
+                    {atleta.apodo}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          <MyDatePicker
+            onDateChange={(date) => {
+              fetchLineas(date);
+              handleDateChange(date);
+            }}
           />
         </div>
-        <button
-          onClick={insertaLinea}
-          className="bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-full mb-5"
+      )}
+
+      {totalEjercicios !== null && (
+        <Grid container justifyContent="center" spacing={3} mb={3}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" align="center" fontWeight="bold">
+              Total ejercicios: {totalEjercicios}
+            </Typography>
+            <Typography variant="h5" align="center" fontWeight="bold">
+              Total repeticiones: {totalRepeticiones}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" align="center" fontWeight="bold">
+              Volumen Absoluto: {volAbsoluto}
+            </Typography>
+            <Typography variant="h5" align="center" fontWeight="bold">
+              Volumen Relativo: {volRelativo}
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
+      <h1 className="w-full text-2xl text-gray-800 font-bold leading-tight text-center">
+        {selectedSesion.nombre}
+      </h1>
+      <button
+          onClick={async () => {
+            try {
+              await insertaLineaEnBD({
+                fecha: selectedDate.toISOString().split("T")[0],
+                series: 3,
+                repeticiones: 10,
+                kilos: 50,
+                comentario: "",
+                atleta_id: selectedAtleta,
+                ejercicio_id: 1,
+                sesion_id: selectedSesion.id,
+              });
+              await fetchLineas(); // Recargar las líneas después de insertar
+              await calcularTotales(format(selectedDate, "yyyy-MM-dd"));
+            } catch (error) {
+              console.error(
+                "Error al insertar la línea en la base de datos: ",
+                error
+              );
+            }
+          }}
+          className="bg-green-500 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-full mb-5 float:right"
         >
           Añadir Ejercicio
         </button>
-      </div>
-      {totalEjercicios !== null && (
-        <div className="text-center mb-3">
-          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-          <div>
-            <h2 className="w-full text-xl text-gray-800 font-bold leading-tight text-center">Total ejercicios: {totalEjercicios}</h2>
-            <h2 className="w-full text-xl text-gray-800 font-bold leading-tight text-center">Total repeticiones: {totalRepeticiones}</h2>
-          </div>
-          <div>
-            <h2 className="w-full text-xl text-gray-800 font-bold leading-tight text-center">Volumen Absoluto: {volAbsoluto}</h2>
-            <h2 className="w-full text-xl text-gray-800 font-bold leading-tight text-center">Volumen Relativo: {volRelativo}</h2>
-          </div> 
-          </div>
-        </div>
-      )}
+
       <table id="tabla" className="table-auto w-full border">
         <thead>
           <tr className="text-left font-medium">
-            <th className="px-4 py-2 border border-gray-400 text-center align-middle">
-              Fecha
-            </th>
             <th className="px-4 py-2 border border-gray-400 text-center align-middle">
               Ejercicio
             </th>
@@ -291,7 +379,7 @@ export default function index() {
               Kilos
             </th>
             <th className="px-4 py-2 border border-gray-400 text-center align-middle">
-              % 1RM
+              %RM
             </th>
             <th className="px-4 py-2 border border-gray-400 text-center align-middle">
               Rep. totales
@@ -311,106 +399,140 @@ export default function index() {
           {lineas.map((linea, key) => (
             <tr key={key} className="text-left">
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                {linea.fecha}
-              </td>
-              <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                <select
-                  value={linea.ejercicio_id}
-                  onChange={(e) => {
-                    const nuevoEjercicioId = parseInt(e.target.value);
-                    const updatedLineas = [...lineas];
-                    updatedLineas[key].ejercicio_id = parseInt(e.target.value);
-                    setLineas(updatedLineas);
-
-                    actualizaFila(key, "ejercicio_id", nuevoEjercicioId);
-                  }}
-                >
-                  {ejercicios.map((ejercicio) => (
-                    <option key={ejercicio.id} value={ejercicio.id}>
-                      {ejercicio.nombre}
-                    </option>
-                  ))}
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    labelId={`ejercicio-label-${key}`}
+                    id={`ejercicio-select-${key}`}
+                    value={linea.ejercicio_id}
+                    onChange={(e) => {
+                      const selectedEjercicioId = e.target.value;
+                      const updatedLineas = lineas.map((lineaItem) => {
+                        if (lineaItem.id === linea.id) {
+                          return {
+                            ...lineaItem,
+                            ejercicio_id: selectedEjercicioId,
+                          };
+                        }
+                        return lineaItem;
+                      });
+                      setLineas(updatedLineas);
+                      actualizaFila(key, "ejercicio_id", selectedEjercicioId);
+                    }}
+                  >
+                    {ejercicios.map((ejercicio) => (
+                      <MenuItem key={ejercicio.id} value={ejercicio.id}>
+                        {ejercicio.nombre}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
                 {rms[linea.ejercicio_id]?.rm || ""}
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                {editarFila === key && editarCampo === "series" ? (
-                  <input
-                    id="series"
-                    type="number"
-                    value={linea.series}
-                    onChange={(e) => {
-                      const updatedLineas = [...lineas];
-                      updatedLineas[key].series = parseInt(e.target.value);
+                <Counter
+                  value={linea.series}
+                  onIncrement={() => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].series += 1;
+                    setLineas(updatedLineas);
+                    actualizaFila(key, "series", updatedLineas[key].series);
+                  }}
+                  onDecrement={() => {
+                    const updatedLineas = [...lineas];
+                    if (updatedLineas[key].series > 0) {
+                      updatedLineas[key].series -= 1;
                       setLineas(updatedLineas);
-                    }}
-                    onBlur={() => actualizaFila(key, "series")}
-                    className="w-[100px] px-2 py-1 border rounded"
-                  />
-                ) : (
-                  <span
-                    onClick={() => {
-                      setEditarFila(key);
-                      setEditarCampo("series");
-                    }}
-                  >
-                    {linea.series}
-                  </span>
-                )}
+                      actualizaFila(key, "series", updatedLineas[key].series);
+                    }
+                  }}
+                  onUpdate={(newValue) => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].series = newValue;
+                    setLineas(updatedLineas);
+                    actualizaFila(key, "series", newValue);
+                  }}
+                />
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                {editarFila === key && editarCampo === "repeticiones" ? (
-                  <input
-                    id="repeticiones"
-                    type="number"
-                    value={linea.repeticiones}
-                    onChange={(e) => {
-                      const updatedLineas = [...lineas];
-                      updatedLineas[key].repeticiones = parseInt(
-                        e.target.value
+                <Counter
+                  value={linea.repeticiones}
+                  onIncrement={() => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].repeticiones += 1;
+                    setLineas(updatedLineas);
+                    actualizaFila(
+                      key,
+                      "repeticiones",
+                      updatedLineas[key].repeticiones
+                    );
+                  }}
+                  onDecrement={() => {
+                    const updatedLineas = [...lineas];
+                    if (updatedLineas[key].repeticiones > 0) {
+                      updatedLineas[key].repeticiones -= 1;
+                      setLineas(updatedLineas);
+                      actualizaFila(
+                        key,
+                        "repeticiones",
+                        updatedLineas[key].repeticiones
                       );
-                      setLineas(updatedLineas);
-                    }}
-                    onBlur={() => actualizaFila(key, "repeticiones")}
-                    className="w-[100px] px-2 py-1 border rounded"
-                  />
-                ) : (
-                  <span
-                    onClick={() => {
-                      setEditarFila(key);
-                      setEditarCampo("repeticiones");
-                    }}
-                  >
-                    {linea.repeticiones}
-                  </span>
-                )}
+                    }
+                  }}
+                  onUpdate={(newValue) => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].repeticiones = newValue;
+                    setLineas(updatedLineas);
+                    actualizaFila(key, "repeticiones", newValue);
+                  }}
+                />
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                {editarFila === key && editarCampo === "kilos" ? (
-                  <input
-                    id="kilos"
-                    type="number"
-                    value={linea.kilos}
-                    onChange={(e) => {
-                      const updatedLineas = [...lineas];
-                      updatedLineas[key].kilos = parseFloat(e.target.value);
-                      setLineas(updatedLineas);
-                    }}
-                    onBlur={() => actualizaFila(key, "kilos")}
-                    className="w-[100px] px-2 py-1 border rounded"
-                  />
-                ) : (
-                  <span
-                    onClick={() => {
-                      setEditarFila(key);
-                      setEditarCampo("kilos");
-                    }}
-                  >
-                    {linea.kilos}
-                  </span>
-                )}
+                <Counter
+                  value={linea.kilos}
+                  onIncrement={() => {
+                    const updatedLineas = [...lineas];
+                    let currentKilos = isNaN(linea.kilos)
+                      ? 0
+                      : parseFloat(linea.kilos);
+                    updatedLineas[key].kilos = parseFloat(
+                      (currentKilos + 1).toFixed(2)
+                    );
+                    setLineas(updatedLineas);
+                    actualizaFila(
+                      key,
+                      "kilos",
+                      updatedLineas[key].kilos.toFixed(2)
+                    );
+                  }}
+                  onDecrement={() => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].kilos = parseFloat(
+                      (linea.kilos - 1).toFixed(2)
+                    );
+                    if (updatedLineas[key].kilos < 0) {
+                      updatedLineas[key].kilos = 0;
+                    }
+                    setLineas(updatedLineas);
+                    actualizaFila(
+                      key,
+                      "kilos",
+                      updatedLineas[key].kilos.toFixed(2)
+                    );
+                  }}
+                  onUpdate={(newValue) => {
+                    const updatedLineas = [...lineas];
+                    updatedLineas[key].kilos = parseFloat(newValue);
+                    setLineas(updatedLineas);
+                    actualizaFila(
+                      key,
+                      "kilos",
+                      parseFloat(newValue).toFixed(2)
+                    );
+                  }}
+                  isKilos={true}
+                />
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
                 {isNaN(rms[linea.ejercicio_id]?.rm)
@@ -430,37 +552,14 @@ export default function index() {
                   : ""}
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                {editarFila === key && editarCampo === "comentario" ? (
-                  <input
-                    type="text"
-                    value={linea.comentario}
-                    onChange={(e) => {
-                      const updatedLineas = [...lineas];
-                      updatedLineas[key].comentario = e.target.value;
-                      setLineas(updatedLineas);
-                    }}
-                    onBlur={() => actualizaFila(key, "comentario")}
-                  />
-                ) : (
-                  <span
-                    onClick={() => {
-                      setEditarFila(key);
-                      setEditarCampo("comentario");
-                    }}
-                  >
-                    {linea.comentario}
-                  </span>
-                )}
+                {linea.comentario}
               </td>
               <td className="px-4 py-2 border border-gray-400 text-center align-middle">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full mr-2">
-                  Edit
-                </button>
                 <button
                   onClick={() => deleteLinea(linea.id)}
                   className="bg-red-500 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full mr-2"
                 >
-                  Delete
+                  Borrar
                 </button>
               </td>
             </tr>
@@ -481,6 +580,8 @@ export default function index() {
         <DeleteModal
           setShowDeleteModal={setShowDeleteModal}
           lineaId={lineaId}
+          fetchLineas={fetchLineas}
+          meta={meta}
         />
       )}
     </div>

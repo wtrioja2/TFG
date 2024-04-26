@@ -15,12 +15,37 @@ class AtletaController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AtletaCollection
      */
     public function index()
     {
-        return new AtletaCollection(Atleta::paginate(10));
+        return new AtletaCollection(Atleta::paginate(12));
     }
+
+    /**
+     * Display the specified resource by user ID.
+     *
+     * @param  int  $userId
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByUserId(Request $request)
+    {
+        // Obtener el user_id del atleta del parámetro de la solicitud
+        $userId = $request->input('user_id');
+
+        // Buscar el atleta por su user_id
+        $atleta = Atleta::where('user_id', $userId)->first();
+
+        if (!$atleta) {
+            return response()->json(['message' => 'Atleta no encontrado'], 404);
+        }
+
+        // Ahora que hemos encontrado al atleta, puedes realizar cualquier lógica adicional aquí
+
+        return response()->json(['data' => $atleta], 200);
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -31,7 +56,7 @@ class AtletaController extends Controller
     public function store(Request $request)
     {
         // Create the validator
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'apodo' => ['required'],
             'user_id' => ['required', 'exists:users,id'],
             'avatar' => ['image', 'max:2048'],
@@ -158,8 +183,8 @@ class AtletaController extends Controller
     public function destroy(Atleta $atleta)
     {
         // Delete the exercise
-       Atleta::where('id', $atleta->id)->delete();
+        Atleta::where('id', $atleta->id)->delete();
 
-       return $this->displayMessage('Atleta borrado!', 200, 'Status');
+        return $this->displayMessage('Atleta borrado!', 200, 'Status');
     }
 }

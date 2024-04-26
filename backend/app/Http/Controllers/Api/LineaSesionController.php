@@ -21,9 +21,31 @@ class LineaSesionController extends Controller
         $fecha = $request->input('fecha');
         $query = $fecha ? LineaSesion::where('fecha', $fecha) : LineaSesion::query();
 
-        return new LineaSesionCollection($query->paginate(10));
+        return new LineaSesionCollection($query->paginate(12));
     }
 
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $fecha = $request->input('fecha');
+
+        $query = LineaSesion::where('atleta_id', $atletaId);
+
+        // Si se proporciona una fecha, agregarla como condición de filtro
+        if ($fecha) {
+            $query->where('fecha', $fecha);
+        }
+
+        return new LineaSesionCollection($query->paginate(12));
+    }
+
+
+    public function indexByAtleta($atletaId)
+    {
+        $lineasSesion = LineaSesion::where('atleta_id', $atletaId)->get();
+
+        return new LineaSesionCollection($lineasSesion->paginate(12));
+    }
     /**
      * Store a newly created resource in storage.
      *

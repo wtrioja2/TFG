@@ -1,11 +1,14 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 
 export default function SidebarNavigation({ user }) {
 
     const sidebarItems = [
         { path: "/dashboard", text: "Dashboard"},
         { path: "/ejercicios", text: "Ejercicios"},
+        { path: "/planificacion", text: "Planificación"},
         { path: "/sesiones", text: "Sesiones"},
         { path: "/lineassesion", text: "Líneas de sesión"},
         { path: "/rm", text: "RM"},
@@ -22,6 +25,21 @@ export default function SidebarNavigation({ user }) {
             { path: "/users", text: "Usuarios"},
         );
     }
+
+    useEffect(() => {
+        if (user.rol === "atleta") {
+            axios.get(`http://localhost:8000/api/v1/atletas/indexByUserId?user_id=${user.id}`)
+                .then(response => {
+                    const atletaData = response.data.data;
+                    localStorage.setItem("atleta_id", atletaData.id);
+                    localStorage.setItem("apodo", atletaData.apodo);
+                    localStorage.setItem("entrenador_id", atletaData.entrenador_id);
+                })
+                .catch(error => {
+                    console.error("Error al obtener los datos del atleta:", error);
+                });
+        }
+    }, [user]);
 
     return (
        /*  <aside className="h-screen bg-gray-200">

@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('avatar')->nullable();
+            $table->string('apodo')->unique()->nullable(false);
             $table->string('iban', 24)->nullable();
             $table->string('informacion', 400)->nullable();
+            $table->json('atletas_ids')->nullable();
             $table->timestamps();
         });
 

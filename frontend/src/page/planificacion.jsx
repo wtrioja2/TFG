@@ -1,7 +1,7 @@
 import React from "react";
 import TopNavigation from "../components/TopNavigation";
 import SidebarNavigation from "../components/SidebarNavigation";
-import LineasSesion from "../components/LineasSesionDatatable";
+import Planificacion from "../components/Planificacion";
 import "../index.css";
 
 export default function Users() {
@@ -15,9 +15,9 @@ export default function Users() {
                 <SidebarNavigation user={ user } />
                 <main className="flex-1 p-6 ml-64" style={{ marginTop: '64px' }} >
                     <h1 className="w-full text-3xl text-gray-800 font-bold leading-tight">
-                        Lineas de sesión
+                        Planificación
                     </h1>
-                    <LineasSesion user={ user } />
+                    <Planificacion user={ user } />
                 </main>
             </div>
         </div>
