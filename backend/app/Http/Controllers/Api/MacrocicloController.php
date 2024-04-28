@@ -20,6 +20,13 @@ class MacrocicloController extends Controller
         return new MacrocicloCollection(Macrociclo::paginate(15));
     }
 
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $macrociclos = Macrociclo::where('atleta_id', $atletaId)->get();
+        return new MacrocicloCollection($macrociclos);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

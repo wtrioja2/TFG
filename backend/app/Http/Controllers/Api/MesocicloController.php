@@ -21,6 +21,13 @@ class MesocicloController extends Controller
         return new MesocicloCollection(Mesociclo::paginate(15));
     }
 
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $mesociclos = Mesociclo::where('atleta_id', $atletaId)->get();
+        return new MesocicloCollection($mesociclos);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
