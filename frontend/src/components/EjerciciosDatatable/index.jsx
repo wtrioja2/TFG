@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Pagination from "./Pagination";
 import axiosConfig from "../../config/axios-config";
+import Pagination from "./Pagination";
 import SearchBox from "../SearchBox";
 import DeleteModal from "./DeleteModal";
 import FormModal from "./FormModal";
 import {
-  TextField,
   Select,
   MenuItem,
   InputLabel,
@@ -92,7 +91,8 @@ export default function Index({ user }) {
   const handleFilterChange = async (tipo, grupoMuscular) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/ejercicios/filtrar?tipo=${tipo}&grupo_muscular=${grupoMuscular}`
+        `${import.meta.env.VITE_API_URL}/api/v1/ejercicios/filtrar?tipo=${tipo}&grupo_muscular=${grupoMuscular}`,
+        axiosConfig
       );
       setEjercicios(response.data.data);
       setLinks(response.data.links);
@@ -105,7 +105,8 @@ export default function Index({ user }) {
   const handleSearchByName = async (searchTerm) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/ejercicios/nombre?nombre=${searchTerm}`
+        `${import.meta.env.VITE_API_URL}/api/v1/ejercicios/nombre?nombre=${searchTerm}`,
+        axiosConfig
       );
       setEjercicios(response.data.data);
       setLinks(response.data.links);

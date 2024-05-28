@@ -46,7 +46,7 @@ class RMController extends Controller
     {
        // Validar los datos de entrada
        $validator = Validator::make($request->all(), [
-        'fecha' => 'required|date_format:d-m-Y', // Asegura que la fecha esté en el formato correcto
+        'fecha' => 'required|date_format:Y-m-d', // Asegura que la fecha esté en el formato correcto
         'rm' => 'required|numeric',
         'ejercicio_id' => 'required|exists:ejercicios,id',
         'atleta_id' => 'required|exists:atletas,id',
@@ -61,7 +61,7 @@ class RMController extends Controller
         }
 
         // Formatear la fecha en el formato deseado ("día-mes-año")
-        $fecha = Carbon::createFromFormat('d-m-Y', $request->fecha)->format('Y-m-d');
+        $fecha = $request->fecha;
 
         // Crear el registro de RM
         $rm = RM::create([
@@ -101,7 +101,7 @@ class RMController extends Controller
     {
        // Validar los datos de entrada
        $validator = Validator::make($request->all(), [
-        'fecha' => 'required|date_format:d-m-Y',
+        'fecha' => 'required|date_format:Y-m-d',
         'rm' => 'numeric',
         'ejercicio_id' => 'exists:ejercicios,id',
         'atleta_id' => 'exists:atletas,id',
@@ -116,7 +116,7 @@ class RMController extends Controller
         }
 
         // Formatear la fecha en el formato deseado ("día-mes-año")
-        $fecha = Carbon::createFromFormat('d-m-Y', $request->fecha)->format('Y-m-d');
+        $fecha = $request->fecha;
 
         // Actualizar los campos proporcionados en la solicitud
         $rm->update([

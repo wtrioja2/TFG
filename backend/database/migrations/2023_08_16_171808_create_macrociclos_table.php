@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('año');
             $table->string('nombre');
-            $table->string('descripción', 400)->nullable();
+            $table->string('descripcion', 400)->nullable();
 
             // Agregar campo para la clave foránea atleta_id
             $table->unsignedBigInteger('atleta_id');

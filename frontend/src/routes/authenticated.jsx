@@ -1,31 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
-import Settings from "../page/settings";
 import Users from "../page/users";
 import Ejercicios from "../page/ejercicios";
 import Planificacion from "../page/planificacion";
 import Sesiones from "../page/sesiones";
-import LineasSesion from "../page/lineasSesion";
 import Rm from "../page/rm";
+import ComposicionCorporal from "../page/composicionCorporal";
 import Dashboard  from "../page/dashboard";
-import AdminDashboard  from "../page/adminDashboard";
-import EntrenadorDashboard  from "../page/entrenadorDashboard";
-
-
 
 
 export default createBrowserRouter([
-    /* {
-        path: "/admin-dashboard",
-        element: <AdminDashboard />,
-    },
-    {
-        path: "/entrenador-dashboard",
-        element: <EntrenadorDashboard />,
-    },
-    {
-        path: "/atleta-dashboard",
-        element: <AtletaDashboard />,
-    }, */
     {
         path: '/',
         element:  <Dashboard />,
@@ -35,25 +18,9 @@ export default createBrowserRouter([
         element:  <Dashboard />,
     },
     {
-        path: "/admin-dashboard",
-        element: 
-                <AdminDashboard />
-    },
-    {
-        path: "/entrenador-dashboard",
-        element: 
-                <EntrenadorDashboard />
-    },
-    {
-        path: "/settings",
-        element: 
-                <Settings />
-    },
-    {
         path: "/users",
         element: 
                 <Users />
-        
     },
     {
         path: "/ejercicios",
@@ -71,14 +38,13 @@ export default createBrowserRouter([
                 <Sesiones />
     },
     {
-        path: "/lineasSesion",
-        element:
-                <LineasSesion />
-
-    },
-    {
         path: "/rm",
         element: 
                 <Rm />
+    },
+    {
+        path: "/composicionCorporal",
+        element: 
+                <ComposicionCorporal />
     },
 ]);

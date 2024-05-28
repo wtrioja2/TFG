@@ -34,7 +34,7 @@ return new class extends Migration
             $table->foreign('microciclo_id')
                 ->references('id')
                 ->on('microciclos')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->timestamps();
         });

@@ -43,7 +43,7 @@ return new class extends Migration
             $table->foreign('sesion_id')
                 ->references('id')
                 ->on('sesiones')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->timestamps();
         });

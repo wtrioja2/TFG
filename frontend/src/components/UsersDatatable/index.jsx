@@ -5,31 +5,23 @@ import axiosConfig from "../../config/axios-config";
 import DeleteModal from "./DeleteModal";
 import FormModal from "./FormModal";
 
-export default function index() {
+export default function Index() {
   const [users, setUsers] = useState([]);
   const [links, setLinks] = useState([]);
   const [meta, setMeta] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
   const [userId, setUserId] = useState(null);
-
   const [formMode, setFormMode] = useState("create");
   const [defaultUserData, setDefaultUserData] = useState([]);
 
-  /**
-   * Set the paginated data
-   *
-   * @param object response
-   */
+
   const setPaginatedData = (response) => {
     setUsers(response.data.data);
     setLinks(response.data.links);
     setMeta(response.data.meta);
   };
 
-  /**
-   * Fetch all users
-   */
   const fetchUsers = async (link) => {
     if (link !== null) {
       const response = await axios.get(link, axiosConfig);
@@ -37,49 +29,29 @@ export default function index() {
     }
   };
 
-  /**
-   * Handle the previous page
-   */
   const previousPage = async () => {
     await fetchUsers(links.prev);
   };
 
-  /**
-   * Handle the next page
-   */
   const nextPage = async () => {
     await fetchUsers(links.next);
   };
 
-  /**
-   * Handle the first page
-   */
   const firstPage = async () => {
     await fetchUsers(links.first);
   };
 
-  /**
-   * Handle the last page
-   */
   const lastPage = async () => {
     await fetchUsers(links.last);
   };
 
-  /**
-   * Create the user
-   *
-   */
   const createUser = () => {
     setShowFormModal(true);
     setFormMode("create");
     setUserId(null);
     setDefaultUserData({});
   };
-  /**
-   * Update the user
-   *
-   * @param int userId
-   */
+
   const updateUser = (userData) => {
     setShowFormModal(true);
     setFormMode("update");
@@ -87,11 +59,6 @@ export default function index() {
     setDefaultUserData(userData);
   };
 
-  /**
-   * Delete de user
-   *
-   * @param int userId
-   */
   const deleteUser = (userId) => {
     setShowDeleteModal(true);
     setUserId(userId);

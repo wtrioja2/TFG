@@ -39,6 +39,26 @@ class EjercicioController extends Controller
         return $ejercicios->toArray();
     }
 
+    public function getNombreYFoto($id)
+    {
+        // Buscar el ejercicio por su ID
+        $ejercicio = Ejercicio::find($id);
+
+        // Verificar si el ejercicio existe
+        if (!$ejercicio) {
+            return response()->json([
+                'message' => 'Ejercicio no encontrado',
+            ], 404);
+        }
+
+        // Devolver el nombre y la foto del ejercicio
+        return response()->json([
+            'id' => $ejercicio->id,
+            'nombre' => $ejercicio->nombre,
+            'url_foto' => $ejercicio->url_foto,
+        ], 200);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -58,7 +78,7 @@ class EjercicioController extends Controller
         // Block or catch any validation failure if there are any
         if ($validator->fails()){
             return response()->json([
-                'message' => 'There are some fields that are required!',
+                'message' => 'Algunos campos son obligatorios!',
                 'errors' => $validator->errors(),
             ]);
         }

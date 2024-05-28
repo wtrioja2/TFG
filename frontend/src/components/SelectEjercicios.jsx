@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import axiosConfig from "../config/axios-config";
 import { MenuItem, TextField } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -38,11 +39,11 @@ function SelectEjercicios({
       if (searchTerm) {
         response = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/v1/ejercicios/nombre?nombre=${searchTerm}&page=${paginaActual}`
-        );
+          , axiosConfig);
       } else {
         response = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/v1/ejercicios/select?page=${paginaActual}`
-        );
+          , axiosConfig);
       }
       setEjercicios((prevEjercicios) => [
         ...prevEjercicios,

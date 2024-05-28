@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ComposicionCorporalCollection;
 use App\Models\ComposicionCorporal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ComposicionCorporalController extends Controller
 {
@@ -16,7 +17,14 @@ class ComposicionCorporalController extends Controller
      */
     public function index()
     {
-        return new ComposicionCorporalCollection(ComposicionCorporal::paginate(10));
+        return new ComposicionCorporalCollection(ComposicionCorporal::paginate(15));
+    }
+
+    public function indexById(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $composicioncorporal = ComposicionCorporal::where('atleta_id', $atletaId)->get();
+        return new ComposicionCorporalCollection($composicioncorporal);
     }
 
     /**
@@ -27,7 +35,26 @@ class ComposicionCorporalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'fecha' => ['required', 'date'],
+            'altura' => ['required', 'numeric'],
+            'peso' => ['required', 'numeric'],
+            'atleta_id' => ['required', 'exists:users,id']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $composicionCorporal = ComposicionCorporal::create($request->all());
+
+        return response()->json([
+            'message' => 'Composicion corporal creada exitosamente',
+            'data' => $composicionCorporal
+        ], 201);
     }
 
     /**
@@ -48,9 +75,29 @@ class ComposicionCorporalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ComposicionCorporal $composicioncorporal)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'fecha' => ['date'],
+            'altura' => ['numeric'],
+            'peso' => ['numeric'],
+            'atleta_id' => ['exists:users,id']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $composicioncorporal->update($request->all());
+
+        return response()->json([
+            'message' => 'Composicion corporal actualizada exitosamente',
+            'data' => $composicioncorporal
+        ], 200);
+
     }
 
     /**

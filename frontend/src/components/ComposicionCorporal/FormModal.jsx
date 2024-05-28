@@ -6,86 +6,70 @@ import MyDatePicker from "../MyDatePicker";
 export default function RmFormModal({
   setShowFormModal,
   formMode,
-  rmId,
-  defaultRmData,
-  fetchRms,
-  ejercicios,
+  composicionCorporalId,
+  defaultComposicionCorporalData,
+  fetchComposicionesCorporales,
   selectedAtleta,
 }) {
-  const [selectedDate, setSelectedDate] = useState(defaultRmData?.fecha ? new Date(defaultRmData.fecha) : new Date());
-  const [ejercicioId, setEjercicioId] = useState(defaultRmData?.id);
-  const [rmValue, setRmValue] = useState(defaultRmData?.rm);
-  const [selectedExercise, setSelectedExercise] = useState(null);
-
-  useEffect(() => {
-    if (defaultRmData && defaultRmData.ejercicio_id) {
-      const exercise = ejercicios.find(
-        (exercise) => exercise.id === defaultRmData.ejercicio_id
-      );
-      setSelectedExercise(exercise);
-      setEjercicioId(defaultRmData.ejercicio_id);
-    }
-    console.log("Default RM Data:", defaultRmData);
-    console.log("Ejercicio ID inicial:", defaultRmData?.ejercicio_id);
-  }, [defaultRmData, ejercicios]);
+  const [selectedDate, setSelectedDate] = useState(defaultComposicionCorporalData?.fecha ? new Date(defaultComposicionCorporalData.fecha) : new Date());
+  const [altura, setAltura] = useState(defaultComposicionCorporalData?.altura || "");
+  const [peso, setPeso] = useState(defaultComposicionCorporalData?.peso || "");
 
   const refreshValues = () => {
     setSelectedDate(new Date());
-    setEjercicioId("");
-    setRmValue("");
+    setAltura("");
+    setPeso("");
   };
 
-  const handleCreateRm = () => {
-    const rmData = {
+  const handleCreateComposicionCorporal = () => {
+    const composicionCorporalData = {
       fecha: selectedDate.toISOString().split("T")[0],
-      ejercicio_id: ejercicioId,
-      rm: rmValue,
+      altura,
+      peso,
       atleta_id: selectedAtleta,
     };
 
     axios
-      .post(`${import.meta.env.VITE_API_URL}/api/v1/rm`, rmData, axiosConfig)
+      .post(`${import.meta.env.VITE_API_URL}/api/v1/composicioncorporal`, composicionCorporalData, axiosConfig)
       .then((response) => {
         setShowFormModal(false);
         refreshValues();
-        fetchRms(`${import.meta.env.VITE_API_URL}/api/v1/rm/indexById?atleta_id=${selectedAtleta}`);
+        fetchComposicionesCorporales();
       })
       .catch((error) => {
-        console.error("Error creating RM:", error);
+        console.error("Error creating Composición Corporal:", error);
       });
   };
 
-  const handleUpdateRm = (rmData) => {
+  const handleUpdateComposicionCorporal = () => {
+    const composicionCorporalData = {
+      fecha: selectedDate.toISOString().split("T")[0],
+      altura,
+      peso,
+      atleta_id: selectedAtleta,
+    };
+  
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}/api/v1/rm/${rmId}`,
-        rmData,
+        `${import.meta.env.VITE_API_URL}/api/v1/composicioncorporal/${composicionCorporalId}`,
+        composicionCorporalData,
         axiosConfig
       )
       .then((response) => {
         setShowFormModal(false);
       })
       .finally(() => {
-        fetchRms(`${import.meta.env.VITE_API_URL}/api/v1/rm/indexById?atleta_id=${selectedAtleta}`);
+        fetchComposicionesCorporales();
       });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formattedDate =
-    selectedDate instanceof Date && !isNaN(selectedDate)
-      ? selectedDate.toISOString().split("T")[0]
-      : null;
     if (formMode === "create") {
-      handleCreateRm();
+      handleCreateComposicionCorporal();
     } else {
-      handleUpdateRm({
-        fecha: formattedDate,
-        ejercicio_id: ejercicioId,
-        rm: rmValue,
-        atleta_id: selectedAtleta,  
-      });
+      handleUpdateComposicionCorporal();
     }
   };
 
@@ -95,24 +79,16 @@ export default function RmFormModal({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(`Changing ${name} to ${value}`);
     switch (name) {
-      case "ejercicio_id":
-        setEjercicioId(value);
+      case "altura":
+        setAltura(value);
         break;
-      case "rm":
-        setRmValue(value);
+      case "peso":
+        setPeso(value);
         break;
       default:
         break;
     }
-  };
-
-  const handleExerciseChange = (e) => {
-    const exerciseId = parseInt(e.target.value);
-    const exercise = ejercicios.find((exercise) => exercise.id === exerciseId);
-    setSelectedExercise(exercise);
-    setEjercicioId(exerciseId);
   };
 
   return (
@@ -121,7 +97,7 @@ export default function RmFormModal({
         <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">
-              {formMode === "create" ? "Crear " : "Actualizar "} RM{" "}
+              {formMode === "create" ? "Crear " : "Actualizar "} Composición Corporal{" "}
             </h1>
             <button onClick={() => setShowFormModal(false)}>
               <svg
@@ -149,31 +125,25 @@ export default function RmFormModal({
               />
             </div>
             <div className="flex flex-col mb-4">
-              <label className="text-gray-700 font-medium mb-2">
-                Ejercicio
-              </label>
-              <select
-                className="bg-white rounded-lg p-2 border-2 border-gray-300"
-                name="ejercicio_id"
-                value={selectedExercise ? selectedExercise.id : ""}
-                onChange={handleExerciseChange}
-              >
-                <option value="">Seleccione un ejercicio</option>
-                {ejercicios.map((ejercicio) => (
-                  <option key={ejercicio.id} value={ejercicio.id}>
-                    {ejercicio.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col mb-4">
-              <label className="text-gray-700 font-medium mb-2">RM</label>
+              <label className="text-gray-700 font-medium mb-2">Altura (cm)</label>
               <input
                 className="bg-white rounded-lg p-2 border-2 border-gray-300"
                 type="number"
-                name="rm"
-                value={rmValue}
+                name="altura"
+                value={altura}
                 onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="flex flex-col mb-4">
+              <label className="text-gray-700 font-medium mb-2">Peso (kg)</label>
+              <input
+                className="bg-white rounded-lg p-2 border-2 border-gray-300"
+                type="number"
+                name="peso"
+                value={peso}
+                onChange={handleChange}
+                required
               />
             </div>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">

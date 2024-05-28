@@ -8,6 +8,8 @@ use App\Models\Ejercicio;
 use App\Models\Sesion;
 use App\Models\LineaSesion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class SesionController extends Controller
 {
@@ -28,6 +30,21 @@ class SesionController extends Controller
         return new SesionCollection($sesiones);
     }
 
+    public function indexByAtletaAndMicrociclo(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $microcicloId = $request->input('microciclo_id');
+
+        // Aquí asumo que tienes una relación entre Mesociclo y Macrociclo en tus modelos
+        // Puedes ajustar esto según la estructura de tus modelos
+        $sesiones = Sesion::where('atleta_id', $atletaId)
+            ->whereHas('microciclo', function ($query) use ($microcicloId) {
+                $query->where('id', $microcicloId);
+            })
+            ->get();
+
+        return new SesionCollection($sesiones);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +56,7 @@ class SesionController extends Controller
     {
         // Validar los datos de entrada
         $validator = Validator::make($request->all(), [
-            'fecha' => ['required'],
+            'fecha' => [],
             'nombre' => ['required'],
             'atleta_id' => ['required'],
             'microciclo_id' => ['required'],
@@ -111,31 +128,31 @@ class SesionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sesion $sesion)
+    public function update(Request $request, Sesion $sesione)
     {
         // Validar los datos de entrada
-    $validator = Validator::make($request->all(), [
-        'fecha' => [],
-        'nombre' => [],
-        'atleta_id' => [],
-        'microciclo_id' => [],
-    ]);
+        $validator = Validator::make($request->all(), [
+            'fecha' => [],
+            'nombre' => [],
+            'atleta_id' => [],
+            'mesociclo_id' => [],
+        ]);
 
-    // Manejar errores de validación
-    if ($validator->fails()) {
+        // Manejar errores de validación
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        // Actualizar los campos necesarios del microciclo
+        $sesione->update($request->all());
+
         return response()->json([
-            'message' => 'Error de validación.',
-            'errors' => $validator->errors(),
-        ], 400);
-    }
-
-    // Actualizar los campos necesarios de la sesión
-    $sesion->update($request->all());
-
-    return response()->json([
-        'data' => $sesion,
-        'message' => 'Sesión actualizada exitosamente.',
-    ], 200);
+            'data' => $sesione,
+            'message' => 'Sesión actualizada exitosamente.',
+        ], 200);
     }
 
     /**

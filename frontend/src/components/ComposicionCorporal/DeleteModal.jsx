@@ -2,17 +2,16 @@ import React from 'react';
 import axios from "axios";
 import axiosConfig from "../../config/axios-config";
 
-export default function DeleteModal({setShowDeleteModal, rmId, fetchRms}) {
+export default function DeleteModal({setShowDeleteModal, composicionCorporalId, fetchComposicionesCorporales}) {
  
     const handleDelete = () => {
         axios
-            .delete(
-                `${import.meta.env.VITE_API_URL}/api/v1/rm/${rmId}`,
+            .delete(`${import.meta.env.VITE_API_URL}/api/v1/composicioncorporal/${composicionCorporalId}`,
                 axiosConfig
             )
             .then((response) =>{
                 setShowDeleteModal(false);
-                fetchRms();
+                fetchComposicionesCorporales();
             });
            
         }
@@ -22,7 +21,7 @@ export default function DeleteModal({setShowDeleteModal, rmId, fetchRms}) {
                 <div className="flex justify-center items-center h-full">
                     <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
                         <p className="text-xl mb-2">
-                            Estás seguro de que quieres borrar esta RM?
+                            Estás seguro de que quieres borrar esta Composición Corporal?
                         </p>
                         <div className="flex justify-between mt-5">
                            

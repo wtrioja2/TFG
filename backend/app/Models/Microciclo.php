@@ -23,7 +23,9 @@ class Microciclo extends Model
     protected static function booted()
     {
         static::creating(function ($microciclo) {
-            $microciclo->semana = Carbon::now()->weekOfYear;
+            if (empty($microciclo->semana)) {
+                $microciclo->semana = Carbon::now()->weekOfYear;
+            }
         });
     }
 
@@ -34,6 +36,6 @@ class Microciclo extends Model
 
     public function mesociclo()
     {
-        return $this->belongsTo(Mesociclo::class, 'microciclo_id');
+        return $this->belongsTo(Mesociclo::class, 'mesociclo_id');
     }
 }

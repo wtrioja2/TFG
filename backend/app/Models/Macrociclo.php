@@ -22,7 +22,9 @@ class Macrociclo extends Model
     protected static function booted()
     {
         static::creating(function ($macrociclo) {
-            $macrociclo->año = Carbon::now()->year;
+            if (empty ($macrociclo->año)) {
+                $macrociclo->año = Carbon::now()->year;
+            }
         });
     }
 

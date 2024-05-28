@@ -46,11 +46,8 @@ export default function Login() {
      * Redirect the user to the dashboard if logged in
      */
     useEffect(() => {
-        //console.log("isLoggedIn changed: ", isLoggedIn);
         if (isRegistered) {      
-
             window.location.href = "/login";
-
         }
     }, [isRegistered]);
 

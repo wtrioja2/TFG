@@ -1,7 +1,7 @@
 import React from "react";
 import TopNavigation from "../components/TopNavigation";
 import SidebarNavigation from "../components/SidebarNavigation";
-import RmDatatable from "../components/RmDatatable";
+import RmDatatable from "../components/RmDatatable/Index";
 
 export default function users() {
 

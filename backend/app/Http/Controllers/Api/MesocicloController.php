@@ -28,6 +28,22 @@ class MesocicloController extends Controller
         return new MesocicloCollection($mesociclos);
     }
 
+    public function indexByAtletaAndMacrociclo(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $macrocicloId = $request->input('macrociclo_id');
+
+        // Aquí asumo que tienes una relación entre Mesociclo y Macrociclo en tus modelos
+        // Puedes ajustar esto según la estructura de tus modelos
+        $mesociclos = Mesociclo::where('atleta_id', $atletaId)
+            ->whereHas('macrociclo', function ($query) use ($macrocicloId) {
+                $query->where('id', $macrocicloId);
+            })
+            ->get();
+
+        return new MesocicloCollection($mesociclos);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -38,7 +54,7 @@ class MesocicloController extends Controller
     {
         // Validar los datos de entrada
         $validator = Validator::make($request->all(), [
-            'mes' => ['required'],
+            'mes' => [],
             'nombre' => ['required'],
             'atleta_id' => ['required'],
             'macrociclo_id' => ['required'],

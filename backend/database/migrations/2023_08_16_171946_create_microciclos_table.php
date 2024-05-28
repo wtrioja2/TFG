@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('semana');
             $table->string('nombre');
-            $table->string('descripción', 400)->nullable();
+            $table->string('descripcion', 400)->nullable();
 
             // Agregar campo para la clave foránea atleta_id
             $table->unsignedBigInteger('atleta_id');
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->foreign('mesociclo_id')
                 ->references('id')
                 ->on('mesociclos')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
 
             $table->timestamps();
         });

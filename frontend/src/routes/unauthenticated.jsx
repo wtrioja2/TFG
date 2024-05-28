@@ -7,13 +7,11 @@ export default createBrowserRouter([
         path: "/",
         element: 
                 <Login />
-
     },
     {
         path: "/login",
         element: 
                 <Login />
-
     },
     {
         path: "/register",

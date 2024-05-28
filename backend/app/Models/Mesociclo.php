@@ -22,7 +22,9 @@ class Mesociclo extends Model
     protected static function booted()
     {
         static::creating(function ($mesociclo) {
-            $mesociclo->mes = Carbon::now()->month;
+            if (empty ($mesociclo->mes)) {
+                $mesociclo->mes = Carbon::now()->month;
+            }
         });
     }
     public function atleta()

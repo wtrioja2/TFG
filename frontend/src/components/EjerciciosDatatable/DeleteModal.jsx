@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 import axiosConfig from "../../config/axios-config";
 
-export default function DeleteModal({setShowDeleteModal, ejercicioId}) {
+export default function DeleteModal({setShowDeleteModal, ejercicioId, fetchEjercicios, meta}) {
  
     const handleDelete = () => {
         axios
@@ -11,9 +11,9 @@ export default function DeleteModal({setShowDeleteModal, ejercicioId}) {
                 axiosConfig
             )
             .then((response) =>{
-                window.location.replace("/ejercicios");
-            });
-            setShowDeleteModal(false);
+                fetchEjercicios(`${import.meta.env.VITE_API_URL}/api/v1/ejercicios?page=${meta.current_page}`);
+                setShowDeleteModal(false);
+            }); 
         }
 
     return (

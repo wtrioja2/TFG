@@ -33,7 +33,7 @@ export default function FormModal({
   /**
    * Create the exercise
    */
-  const handleCreateExercise = () => {
+  const handleCreateEjercicio = () => {
     const ejercicioData = {
       nombre,
       descripcion,
@@ -242,31 +242,38 @@ export default function FormModal({
                 onChange={handleChange}
               >
                 <option value="fuerza">Fuerza</option>
-                <option value="aeróbico">Aeróbico</option>
-                <option value="flexibilidad">Flexibilidad</option>
-              </select>
-            </div>
-            <div className="flex flex-col mb-4">
-              <label
-                className="text-gray-700 font-medium mb-2"
-                htmlFor="grupoMuscular"
-              >
-                Grupo Muscular
-              </label>
-              <select
-                className="bg-white rounded-lg p-2 border-2 border-gray-300"
-                id="grupoMuscular"
-                name="grupoMuscular"
-                value={grupoMuscular}
-                onChange={handleChange}
-              >
-                <option value="pecho">Pecho</option>
-                <option value="espalda">Espalda</option>
-                <option value="piernas">Piernas</option>
-                <option value="brazos">Brazos</option>
+                <option value="cardio">Cardio</option>
+                <option value="movilidad">Movilidad</option>
+                <option value="otro">Otro</option>
               </select>
             </div>
 
+            {tipo === "fuerza" && (
+              <div className="flex flex-col mb-4">
+                <label
+                  className="text-gray-700 font-medium mb-2"
+                  htmlFor="grupoMuscular"
+                >
+                  Grupo Muscular
+                </label>
+                <select
+                  className="bg-white rounded-lg p-2 border-2 border-gray-300"
+                  id="grupoMuscular"
+                  name="grupoMuscular"
+                  value={grupoMuscular}
+                  onChange={handleChange}
+                >
+                  <option value="pecho">Pecho</option>
+                  <option value="espalda">Espalda</option>
+                  <option value="pierna">Pierna</option>
+                  <option value="hombro">Hombro</option>
+                  <option value="biceps">Bíceps</option>
+                  <option value="triceps">Tríceps</option>
+                  <option value="core">Core</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+            )}
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
               Guardar
             </button>

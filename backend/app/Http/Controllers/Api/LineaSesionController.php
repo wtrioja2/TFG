@@ -36,7 +36,9 @@ class LineaSesionController extends Controller
             $query->where('fecha', $fecha);
         }
 
-        return new LineaSesionCollection($query->paginate(12));
+        $lineasSesion = $query->get();
+
+        return new LineaSesionCollection($lineasSesion);
     }
 
 
@@ -44,7 +46,7 @@ class LineaSesionController extends Controller
     {
         $lineasSesion = LineaSesion::where('atleta_id', $atletaId)->get();
 
-        return new LineaSesionCollection($lineasSesion->paginate(12));
+        return new LineaSesionCollection($lineasSesion->paginate(15));
     }
     /**
      * Store a newly created resource in storage.

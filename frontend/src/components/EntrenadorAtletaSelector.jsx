@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import axiosConfig from "../config/axios-config";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) => {
@@ -9,12 +10,12 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
   const [selectedAtleta, setSelectedAtleta] = useState("");
 
   useEffect(() => {
-    if (user.rol === "admin" || user.rol === "entrenador") {
+    if (user.rol === "admin") {
       obtenerEntrenadores();
     }
     if (user.rol === "entrenador") {
       obtenerEntrenadorId(user.id);
-    }
+    } 
   }, [user]);
   
   const obtenerEntrenadores = async () => {
@@ -31,8 +32,8 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
   const obtenerEntrenadorId = async (userId) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/entrenadores?id_usuario=${userId}`
-      );
+        `${import.meta.env.VITE_API_URL}/api/v1/entrenadores?id_usuario=${userId}`, axiosConfig
+        );
       const entrenadorId = response.data.data[0]?.id || "";
       if (entrenadorId) {
         setSelectedEntrenador(entrenadorId);
@@ -48,6 +49,7 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/entrenadores/${entrenadorId}/atletas`
+        
       );
       setAtletas(response.data.data);
     } catch (error) {
@@ -69,10 +71,10 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
   };
 
   return (
-    <div className="mt-10">
+    <div className="mt-3">
       {user.rol === "admin" && (
-        <div className="flex justify-between mb-3">
-          <FormControl variant="outlined" className="form-control mb-3 tercio">
+        <div className="flex justify-between mb-6">
+          <FormControl variant="outlined" className="form-control mb-3 tercio" style={{ width: "300px", marginRight: "200px" }}>
             <InputLabel id="entrenador-label">Seleccionar Entrenador</InputLabel>
             <Select
               labelId="entrenador-label"
@@ -91,7 +93,7 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
           </FormControl>
 
           {selectedEntrenador && (
-            <FormControl variant="outlined" className="form-control mb-3 tercio">
+            <FormControl variant="outlined" className="form-control mb-3 tercio" style={{ width: "300px" }}>
               <InputLabel id="atleta-label">Seleccionar Atleta</InputLabel>
               <Select
                 labelId="atleta-label"
@@ -113,7 +115,8 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
       )}
 
       {user.rol === "entrenador" && (
-        <FormControl variant="outlined" className="form-control mb-3 tercio">
+        <div className="flex justify-between mb-6">
+        <FormControl variant="outlined" className="form-control mb-3 tercio" style={{ width: "300px" }}>
           <InputLabel id="atleta-label">Seleccionar Atleta</InputLabel>
           <Select
             labelId="atleta-label"
@@ -130,6 +133,7 @@ const EntrenadorAtletaSelector = ({ user, onEntrenadorChange, onAtletaChange }) 
             ))}
           </Select>
         </FormControl>
+        </div>
       )}
     </div>
   );

@@ -16,7 +16,7 @@ export default function atletaDashboard() {
                     <h1 className="w-full text-3xl text-gray-800 font-bold leading-tight">
                         Dashboard
                     </h1>
-                    <Dashboard />
+                    <Dashboard user={user} />
                 </main>
             </div>
         </div>

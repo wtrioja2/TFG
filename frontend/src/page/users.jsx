@@ -1,7 +1,7 @@
 import React from "react";
 import TopNavigation from "../components/TopNavigation";
 import SidebarNavigation from "../components/SidebarNavigation";
-import UsersDatatable from "../components/UsersDatatable";
+import UsersDatatable from "../components/UsersDatatable/Index";
 
 export default function users() {
 

@@ -1,7 +1,7 @@
 import React from "react";
 import TopNavigation from "../components/TopNavigation";
 import SidebarNavigation from "../components/SidebarNavigation";
-import Planificacion from "../components/Planificacion";
+import Planificacion from "../components/Planificacion/Index";
 import "../index.css";
 
 export default function Users() {

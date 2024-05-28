@@ -37,7 +37,7 @@ class MacrocicloController extends Controller
     {
         // Validar los datos de entrada
         $validator = Validator::make($request->all(), [
-            'año' => ['required'],
+            'año' => [],
             'nombre' => ['required'],
             'atleta_id' => ['required'],
         ]);

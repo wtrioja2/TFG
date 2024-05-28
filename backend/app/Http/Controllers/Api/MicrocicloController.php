@@ -10,7 +10,7 @@ use App\Http\Resources\MicrocicloCollection;
 
 class MicrocicloController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return MicrocicloCollection
@@ -27,6 +27,21 @@ class MicrocicloController extends Controller
         return new MicrocicloCollection($microciclos);
     }
 
+    public function indexByAtletaAndMesociclo(Request $request)
+    {
+        $atletaId = $request->input('atleta_id');
+        $mesocicloId = $request->input('mesociclo_id');
+
+        // Aquí asumo que tienes una relación entre Mesociclo y Macrociclo en tus modelos
+        // Puedes ajustar esto según la estructura de tus modelos
+        $microciclos = Microciclo::where('atleta_id', $atletaId)
+            ->whereHas('mesociclo', function ($query) use ($mesocicloId) {
+                $query->where('id', $mesocicloId);
+            })
+            ->get();
+
+        return new MicrocicloCollection($microciclos);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -37,7 +52,7 @@ class MicrocicloController extends Controller
     {
         // Validar los datos de entrada
         $validator = Validator::make($request->all(), [
-            'semana' => ['required'],
+            'semana' => [],
             'nombre' => ['required'],
             'atleta_id' => ['required'],
             'mesociclo_id' => ['required'],

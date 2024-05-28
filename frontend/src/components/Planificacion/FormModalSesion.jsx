@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Modal, TextField, Button, MenuItem } from "@mui/material";
 import axios from "axios";
 import axiosConfig from "../../config/axios-config";
 
-export default function FormModalMacrociclo({
-  setShowFormModalMacrociclo,
+export default function FormModalSesion({
+  setShowFormModalSesion,
   formMode,
-  macrocicloId,
-  defaultMacrocicloData,
-  fetchMacrociclos,
+  sesionId,
+  defaultSesionData,
+  fetchSesiones,
   selectedAtleta,
+  selectedMicrociclo,
 }) {
-  const [nombre, setNombre] = useState(defaultMacrocicloData.nombre || "");
-  const [descripcion, setDescripcion] = useState(defaultMacrocicloData.descripcion || "");
+  const [nombre, setNombre] = useState(defaultSesionData.nombre || "");
+  const [descripcion, setDescripcion] = useState(defaultSesionData.descripcion || "");
 
   const refreshValues = () => {
     setNombre("");
     setDescripcion("");
   };
 
-  const handleCreateMacrociclo = () => {
-    const macrocicloData = {
+  const handleCreateSesion= () => {
+    const sesionData = {
+      microciclo_id: selectedMicrociclo,
       atleta_id: selectedAtleta,
       nombre,
       descripcion,
@@ -27,50 +30,52 @@ export default function FormModalMacrociclo({
 
     axios
       .post(
-        `${import.meta.env.VITE_API_URL}/api/v1/macrociclos`,
-        macrocicloData,
+        `${import.meta.env.VITE_API_URL}/api/v1/sesiones`,
+        sesionData,
         axiosConfig
       )
       .then((response) => {
-        setShowFormModalMacrociclo(false);
+        setShowFormModalSesion(false);
         refreshValues();
-        fetchMacrociclos();
+        fetchSesiones(selectedMicrociclo);
       })
       .catch((error) => {
         // Handle error
-        console.error("Error al crear el macrociclo:", error);
+        console.error("Error al crear la sesión:", error);
       });
   };
 
-  const handleUpdateMacrociclo = () => {
-    const macrocicloData = {
+  const handleUpdateSesion = () => {
+    const sesionData = {
       nombre,
       descripcion,
     };
 
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}/api/v1/macrociclos/${macrocicloId}`,
-        macrocicloData,
+        `${import.meta.env.VITE_API_URL}/api/v1/sesiones/${sesionId}`,
+        sesionData,
         axiosConfig
       )
       .then((response) => {
-        setShowFormModalMacrociclo(false);
+        setShowFormModalSesion(false);
       })
       .finally(() => {
-        fetchMacrociclos();
+        fetchSesiones(
+          `${import.meta.env.VITE_API_URL}/api/v1/sesiones`
+        );
       });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formMode === "create") {
-      handleCreateMacrociclo();
+      handleCreateSesion();
     } else {
-      handleUpdateMacrociclo();
+      handleUpdateSesion();
     }
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -91,9 +96,9 @@ export default function FormModalMacrociclo({
         <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">
-              {formMode === "create" ? "Crear " : "Actualizar "} Macrociclo{" "}
+              {formMode === "create" ? "Crear " : "Actualizar "} Sesión{" "}
             </h1>
-            <button onClick={() => setShowFormModalMacrociclo(false)}>
+            <button onClick={() => setShowFormModalSesion(false)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Sesion extends Model
 {
@@ -18,6 +19,15 @@ class Sesion extends Model
         'atleta_id',
         'microciclo_id'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($sesion) {
+            if (empty ($sesion->fecha)) {
+                $sesion->fecha = Carbon::now()->toDateString();
+            }
+        });
+    }
 
     public function atleta()
     {

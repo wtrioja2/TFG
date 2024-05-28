@@ -2,24 +2,26 @@ import React, { useState } from "react";
 import axios from "axios";
 import axiosConfig from "../../config/axios-config";
 
-export default function FormModalMacrociclo({
-  setShowFormModalMacrociclo,
+export default function FormModalMesociclo ({
+  setShowFormModalMesociclo,
   formMode,
-  macrocicloId,
-  defaultMacrocicloData,
-  fetchMacrociclos,
+  mesocicloId,
+  defaultMesocicloData,
+  fetchMesociclos,
   selectedAtleta,
+  selectedMacrociclo,
 }) {
-  const [nombre, setNombre] = useState(defaultMacrocicloData.nombre || "");
-  const [descripcion, setDescripcion] = useState(defaultMacrocicloData.descripcion || "");
+  const [nombre, setNombre] = useState(defaultMesocicloData.nombre || "");
+  const [descripcion, setDescripcion] = useState(defaultMesocicloData.descripcion || "");
 
   const refreshValues = () => {
     setNombre("");
     setDescripcion("");
   };
 
-  const handleCreateMacrociclo = () => {
-    const macrocicloData = {
+  const handleCreateMesociclo = () => {
+    const mesocicloData = {
+      macrociclo_id: selectedMacrociclo,
       atleta_id: selectedAtleta,
       nombre,
       descripcion,
@@ -27,50 +29,50 @@ export default function FormModalMacrociclo({
 
     axios
       .post(
-        `${import.meta.env.VITE_API_URL}/api/v1/macrociclos`,
-        macrocicloData,
+        `${import.meta.env.VITE_API_URL}/api/v1/mesociclos`,
+        mesocicloData,
         axiosConfig
       )
       .then((response) => {
-        setShowFormModalMacrociclo(false);
+        setShowFormModalMesociclo(false);
         refreshValues();
-        fetchMacrociclos();
+        fetchMesociclos(selectedMacrociclo);
       })
       .catch((error) => {
         // Handle error
-        console.error("Error al crear el macrociclo:", error);
+        console.error("Error al crear el mesociclo:", error);
       });
   };
 
-  const handleUpdateMacrociclo = () => {
-    const macrocicloData = {
+  const handleUpdateMesociclo = () => {
+    const mesocicloData = {
       nombre,
       descripcion,
     };
 
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}/api/v1/macrociclos/${macrocicloId}`,
-        macrocicloData,
+        `${import.meta.env.VITE_API_URL}/api/v1/mesociclos/${mesocicloId}`,
+        mesocicloData,
         axiosConfig
       )
       .then((response) => {
-        setShowFormModalMacrociclo(false);
+        setShowFormModalMesociclo(false);
       })
       .finally(() => {
-        fetchMacrociclos();
+        fetchMesociclos(selectedMacrociclo);
       });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formMode === "create") {
-      handleCreateMacrociclo();
+      handleCreateMesociclo();
     } else {
-      handleUpdateMacrociclo();
+      handleUpdateMesociclo();
     }
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -91,9 +93,9 @@ export default function FormModalMacrociclo({
         <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">
-              {formMode === "create" ? "Crear " : "Actualizar "} Macrociclo{" "}
+              {formMode === "create" ? "Crear " : "Actualizar "} Mesociclo{" "}
             </h1>
-            <button onClick={() => setShowFormModalMacrociclo(false)}>
+            <button onClick={() => setShowFormModalMesociclo(false)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
