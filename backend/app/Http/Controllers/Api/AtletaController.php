@@ -60,7 +60,9 @@ class AtletaController extends Controller
             'apodo' => ['required'],
             'user_id' => ['required', 'exists:users,id'],
             'avatar' => ['image', 'max:2048'],
-            'informacion' => ['nullable', 'string', 'max:400']
+            'informacion' => ['nullable', 'string', 'max:400'],
+            'entrenador_id' => ['nullable'],
+            'movil' => ['nullable', 'string', 'max:9'],
         ]);
 
         // Manejar errores de validación
@@ -90,8 +92,10 @@ class AtletaController extends Controller
         $atleta = Atleta::create([
             'apodo' => $request->apodo,
             'user_id' => $request->user_id,
+            'entrenador_id' => $request->entrenador_id ?? null,
             'avatar' => $avatarName ?? null, // Guardar el nombre del archivo si se subió una imagen
-            'informacion' => $request->informacion ?? null
+            'informacion' => $request->informacion ?? null,
+            'movil' => $request->movil ?? null,
         ]);
 
         // Respuesta exitosa

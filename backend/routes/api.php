@@ -34,9 +34,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('v1/register', [UserController::class, 'store']);
+Route::post('v1/atleta/register', [AtletaController::class, 'store']);
+Route::post('v1/entrenador/register', [EntrenadorController::class, 'store']);
 
 Route::post('v1/login', [LoginController::class, 'index']);
 Route::middleware('auth:sanctum')->get('v1/check-token', [LoginController::class, 'checkToken']);
+
 
 
 Route::get('v1/lineassesion/maxid', [LineaSesionController::class, 'getMaxLineaId']);

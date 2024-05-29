@@ -13,6 +13,7 @@ class Entrenador extends Model
 
     protected $fillable = [
         'user_id',
+        'apodo',
         'iban',
         'informacion',
         'atletas_ids',

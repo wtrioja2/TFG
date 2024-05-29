@@ -76,7 +76,7 @@ export default function Login() {
       <div className="wrap-input100 m-b-23">
         <span className="label-input100">Correo</span>
         <input
-          className="input100"
+          className="input100-grande"
           type="email"
           name="email"
           id="email"
@@ -89,7 +89,7 @@ export default function Login() {
       <div className="wrap-input100">
         <span className="label-input100">Contraseña</span>
         <input
-          className="input100"
+          className="input100-grande"
           type="password"
           name="password"
           id="password"

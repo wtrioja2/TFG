@@ -7,7 +7,8 @@ export default function login() {
 
         <div className="limiter">
             <div className="container-login100" style={{ backgroundImage: `url(${background})` }} >
-                <div className="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+            <div className="wrap-login100 p-l-45 p-r-45 p-t-55 p-b-45" style={{ transform: "scale(0.85)" }}>
+
         
                     <Login />
         

@@ -15,6 +15,8 @@ class Atleta extends Model
         'apodo',
         'informacion',
         'movil',
+        'user_id',
+        'entrenador_id',
     ];
 
     public function user()
