@@ -21,7 +21,7 @@ const materialTheme = createTheme({
     },
     MuiPickersBasePicker: {
       container: {
-        maxWidth: "400px"
+        maxWidth: "400px",
       },
       pickerView: {
         minWidth: "400px",
@@ -142,7 +142,7 @@ export default function CustomCalendar({
           <Paper className={classes.selectedDayPaper}>
             <Grid item>{day.getDate()}</Grid>
             <Grid container justifyContent="flex-end">
-              <Grid item style={{ margin: '-4px' }}>
+              <Grid item style={{ margin: "-4px" }}>
                 <EventIcon fontSize="small" />
               </Grid>
             </Grid>
@@ -175,7 +175,7 @@ export default function CustomCalendar({
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex", marginTop: "20px" }}>
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
         <ThemeProvider theme={materialTheme}>
           <DatePicker
@@ -190,7 +190,8 @@ export default function CustomCalendar({
         </ThemeProvider>
       </MuiPickersUtilsProvider>
 
-      <div>
+
+      <div style={{ marginTop: "-11px" }}>
         <div className="grid grid-cols-3 gap-4">
           {sesionesFechaSeleccionada.map((sesion) => (
             <div key={sesion.id} className="sessionCard">

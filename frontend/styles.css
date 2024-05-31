@@ -63,6 +63,10 @@ h1,h2,h3,h4,h5,h6 {
     margin: 0px;
 }
 
+.text-orange {
+  color: #ffa509;
+}
+
 p {
     /* font-family: Poppins-Regular; */
     font-size: 14px;
@@ -372,7 +376,7 @@ button:hover {
   width: 300%;
   height: 100%;
   background: rgb(96,207,220);
-  background: linear-gradient(90deg, rgba(96,207,220,1) 0%, rgba(190,52,218,1) 92%);
+  background: linear-gradient(90deg, rgb(29, 15, 2) 0%, rgb(255, 115, 0) 92%);
   top: 0;
   left: -100%;
 

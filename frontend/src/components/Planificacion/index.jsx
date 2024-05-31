@@ -244,9 +244,6 @@ export default function Index({ user }) {
 
   return (
     <div className="mt-10">
-      <h1 className="w-full text-2xl text-gray-800 font-bold leading-tight text-center">
-        Planificación
-      </h1>
       <EntrenadorAtletaSelector
         user={user}
         onEntrenadorChange={handleEntrenadorChange}

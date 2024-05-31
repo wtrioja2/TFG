@@ -23,6 +23,19 @@ class EntrenadorController extends Controller
         return new EntrenadorCollection(Entrenador::paginate(12));
     }
 
+    public function indexByUserId(Request $request)
+    {
+        $userId = $request->input('user_id');
+
+        $entrenador = Entrenador::where('user_id', $userId)->first();
+
+        if (!$entrenador) {
+            return response()->json(['message' => 'Entrenador no encontrado'], 404);
+        }
+
+        return response()->json(['data' => $entrenador], 200);
+    }
+
     public function indexTotalEntrenadores()
     {
         $entrenadores = Entrenador::all()->map(function ($entrenador) {

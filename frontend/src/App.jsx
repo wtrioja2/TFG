@@ -3,12 +3,10 @@ import Login from './components/Login'
 
 function App() {
 
-  const [user, setUser] = useState(null);
-
   return (
 
       <div>
-        <Login setUser={setUser}/>
+        <Login />
       </div>
   );
 } 

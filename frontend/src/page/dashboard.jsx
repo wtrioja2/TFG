@@ -14,7 +14,7 @@ export default function atletaDashboard() {
                 <SidebarNavigation user={user} />
                 <main className="flex-1 p-6 ml-64" style={{ marginTop: '64px' }} >
                     <h1 className="w-full text-3xl text-gray-800 font-bold leading-tight">
-                        Dashboard
+                        Inicio
                     </h1>
                     <Dashboard user={user} />
                 </main>

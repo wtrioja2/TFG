@@ -1,6 +1,6 @@
 import React from "react";
 import Login from "../components/Login";
-import background from "../assets/images/bg-01.jpg"
+import background from "../assets/images/bg-02.png"
 
 export default function login() {
     return (

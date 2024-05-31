@@ -46,7 +46,18 @@ export default function Login() {
           window.location.href = "/dashboard";
           break;
         case "entrenador":
+          axios
+            .get(`${import.meta.env.VITE_API_URL}/api/v1/entrenadores/indexByUserId?user_id=${user.id}`)
+            .then((response) => {
+              const entrenadorData = response.data.data;
+              localStorage.setItem("entrenador_id", entrenadorData.id);
+              localStorage.setItem("apodo", entrenadorData.apodo);
+              localStorage.setItem("atletas_ids", entrenadorData.atletas_ids);
           window.location.href = "/dashboard";
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos del entrenador:", error);
+        });
           break;
         case "atleta":
           axios

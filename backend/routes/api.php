@@ -60,12 +60,14 @@ Route::get('v1/mesociclos/indexById', [MesocicloController::class, 'indexById'])
 Route::get('v1/macrociclos/indexById', [MacrocicloController::class, 'indexById']);
 Route::get('v1/lineassesion/indexById', [LineaSesionController::class, 'indexById']);
 Route::get('v1/atletas/indexByUserId', [AtletaController::class, 'indexByUserId']);
+Route::get('v1/entrenadores/indexByUserId', [EntrenadorController::class, 'indexByUserId']);
 Route::get('v1/composicioncorporal/indexById', [ComposicionCorporalController::class, 'indexById']);
 
 Route::get('v1/sesiones/indexByAtletaAndMicrociclo', [SesionController::class, 'indexByAtletaAndMicrociclo']);
 Route::get('v1/microciclos/indexByAtletaAndMesociclo', [MicrocicloController::class, 'indexByAtletaAndMesociclo']);
 Route::get('v1/mesociclos/indexByAtletaAndMacrociclo', [MesocicloController::class, 'indexByAtletaAndMacrociclo']);
 Route::get('v1/entrenadores/{entrenador}/atletas', [EntrenadorController::class, 'getAtletas']);
+Route::get('v1/atletas/entrenador/{id}', [AtletaController::class, 'showByEntrenadorId']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('v1/logout', [LogoutController::class, 'index']);

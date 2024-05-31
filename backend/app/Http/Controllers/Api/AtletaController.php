@@ -117,6 +117,15 @@ class AtletaController extends Controller
         return response()->json($atleta, 200);
     }
 
+    public function showByEntrenadorId($id)
+    {
+        $atletas = Atleta::where('entrenador_id', $id)->paginate(12);
+
+        if($atletas->isEmpty()) {return response()->json(['message' => 'No se encontraron atletas para ese entrenador'], 404);
+        }
+        return response()->json(['data' => $atletas], 200);
+    }
+
     /**
      * Update the specified resource in storage.
      *
