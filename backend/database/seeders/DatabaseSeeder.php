@@ -671,7 +671,7 @@ class DatabaseSeeder extends Seeder
             'sesion_id'=>1,
         ]);
         DB::table('lineas_sesion')->insert([
-            'fecha'=>'2023-04-15',
+            'fecha'=>'2024-04-15',
             'series'=>3,
             'repeticiones'=>15,
             'kilos'=>35,

@@ -21,7 +21,7 @@ export default function DeleteModal({setShowDeleteModal, userId}) {
                 <div className="flex justify-center items-center h-full">
                     <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
                         <p className="text-xl mb-2">
-                            ¿Estás seguro de querer borrar el usuario {userId}?
+                            ¿Estás seguro de querer borrar el usuario?
                         </p>
                         <div className="flex justify-between mt-5">
                             

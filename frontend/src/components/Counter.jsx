@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 
+const roundToTwoDecimals = (num) => {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+};
+
 const Counter = ({ value, onIncrement, onDecrement, onUpdate, isKilos }) => {
   const [editing, setEditing] = useState(false);
   const [displayValue, setDisplayValue] = useState(value.toString());
@@ -13,7 +17,7 @@ const Counter = ({ value, onIncrement, onDecrement, onUpdate, isKilos }) => {
 
     // Si es para kilos, redondea a 2 decimales
     if (isKilos) {
-      newValue = parseFloat(newValue.toFixed(2));
+      roundToTwoDecimals(newValue);
     } else {
       newValue = parseInt(newValue);
     }

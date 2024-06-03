@@ -237,10 +237,10 @@ export default function Index({ user }) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h5" align="center" fontWeight="bold">
-              Volumen Absoluto: {volAbsoluto}
+              Volumen Absoluto: {volAbsoluto.toFixed(2)}
             </Typography>
             <Typography variant="h5" align="center" fontWeight="bold">
-              Volumen Relativo: {volRelativo}
+              Volumen Relativo: {volRelativo.toFixed(2)}
             </Typography>
           </Grid>
         </Grid>

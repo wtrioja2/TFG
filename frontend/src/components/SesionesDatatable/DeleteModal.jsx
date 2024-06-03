@@ -24,7 +24,7 @@ export default function DeleteModal({setShowDeleteModal, lineaId, fetchLineas}) 
                 <div className="flex justify-center items-center h-full">
                     <div className="bg-white w-[800px] mx-auto rounded-lg shadow-lg p-6">
                         <p className="text-xl mb-2">
-                            Are you sure you want to delete this item {lineaId}?
+                                Estás seguro de que quieres borrar este ejercicio?
                         </p>
                         <div className="flex justify-between mt-5">
                            

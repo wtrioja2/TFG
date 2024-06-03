@@ -225,7 +225,7 @@ class SesionController extends Controller
                         return 0;
                     }
                 });
-                $volumenRelativoTotal += $volumenRelativoSesion;
+                $volumenRelativoTotal += round($volumenRelativoSesion, 2);
             }
 
             return response()->json([
