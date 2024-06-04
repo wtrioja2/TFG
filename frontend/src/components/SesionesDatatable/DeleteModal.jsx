@@ -1,8 +1,9 @@
 import React from 'react';
 import axios from "axios";
 import axiosConfig from "../../config/axios-config";
+import { format } from "date-fns";
 
-export default function DeleteModal({setShowDeleteModal, lineaId, fetchLineas}) {
+export default function DeleteModal({setShowDeleteModal, lineaId, fetchLineas, calcularTotales, selectedDate}) {
  
     const handleDelete = () => {
         axios
@@ -13,6 +14,7 @@ export default function DeleteModal({setShowDeleteModal, lineaId, fetchLineas}) 
             .then((response) => {
                 fetchLineas(); 
                 setShowDeleteModal(false); 
+                calcularTotales(format(selectedDate, "yyyy-MM-dd"));
             })
             .catch((error) => {
                 console.error('Error deleting line:', error);

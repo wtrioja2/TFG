@@ -495,6 +495,8 @@ export default function Index({ user }) {
           setShowDeleteModal={setShowDeleteModal}
           lineaId={lineaId}
           fetchLineas={fetchLineas}
+          calcularTotales={calcularTotales}
+          selectedDate={selectedDate}
         />
       )}
     </div>
